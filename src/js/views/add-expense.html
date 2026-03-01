@@ -1,0 +1,96 @@
+<!--
+Oracle Field Service Debriefing plugin
+
+Copyright (c) 2023, Oracle and/or its affiliates.
+Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
+-->
+
+<div class="oj-flex oj-padding-top oj-md-padding-4x-vertical plugin-main-container charges-main-container">
+    <div class="oj-sm-12 oj-flex-item oj-sm-padding-2x-horizontal">
+
+        <h3>Add Expenses</h3>
+        <oj-validation-group id="tracker">
+            <oj-combobox-one class="input-wide margin-top-16x"
+                             id="activity"
+                             label-hint="Billing Type"
+                             messages-custom="[[selectMessagesCustomBillingType]]"
+                             required="true"
+                             value="{{activityId}}">
+                <oj-bind-for-each data="[[activityEnumArray]]">
+                    <template>
+                        <oj-option value="[[$current.data.value]]">
+                            <oj-bind-text value="[[$current.data.label]]"></oj-bind-text>
+                        </oj-option>
+                    </template>
+                </oj-bind-for-each>
+            </oj-combobox-one>
+
+            <oj-combobox-one class="input-wide margin-top-16x"
+                             id="laborItem"
+                             label-hint="Billing Item"
+                             messages-custom="[[selectMessagesCustomBillingItem]]"
+                             required="true"
+                             value="{{expenseItemId}}">
+                <oj-bind-for-each data="[[expenseItemEnumArray]]">
+                    <template>
+                        <oj-option value="[[$current.data.value]]">
+                            <oj-bind-text value="[[$current.data.label]]"></oj-bind-text>
+                        </oj-option>
+                    </template>
+                </oj-bind-for-each>
+            </oj-combobox-one>
+
+            <oj-input-number class="input-wide margin-top-16x"
+                             id="amount"
+                             label-hint="Amount"
+                             min="0"
+                             required="true"
+                             step="0.01"
+                             value="{{amount}}">
+            </oj-input-number>
+
+            <div class="oj-flex margin-top-16x">
+
+                <oj-label class="oj-text-color-secondary charges-description"
+                          for="itemDescription">
+                    Description
+                </oj-label>
+
+                <oj-input-text
+                        id="itemDescription"
+                        readonly="true"
+                        value="[[expenseItemDescription]]">
+                </oj-input-text>
+
+            </div>
+
+
+            <oj-combobox-one class="input-wide margin-top-16x"
+                             id="currency"
+                             label-hint="Currency"
+                             messages-custom="[[selectMessagesCustomCurrency]]"
+                             required="true"
+                             value="{{currencyKey}}">
+                <oj-bind-for-each data="[[expenseCurrencyEnumArray]]">
+                    <template>
+                        <oj-option value="[[$current.data.value]]">
+                            <oj-bind-text value="[[$current.data.label]]"></oj-bind-text>
+                        </oj-option>
+                    </template>
+                </oj-bind-for-each>
+            </oj-combobox-one>
+        </oj-validation-group>
+
+        <div class="screen-actions oj-margin-vertical">
+            <oj-button chroming="outlined" class="padding-all-16x margin-bottom-16px margin-top-40px"
+                       on-click='[[dispose.bind($data)]]'>Cancel
+            </oj-button>
+            <oj-button chroming="callToAction"
+                       class="charges-screen-button padding-all-16x margin-bottom-16px margin-top-40px"
+                       on-click="[[submit.bind($data)]]">Submit
+            </oj-button>
+        </div>
+
+    </div>
+</div>
+

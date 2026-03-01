@@ -1,0 +1,243 @@
+<!--
+Oracle Field Service Debriefing plugin
+
+Copyright (c) 2023, Oracle and/or its affiliates.
+Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
+-->
+
+<div id="emptyDashboard-container" class="plugin-main-container dashboard-flex-styles empty-dashboard"
+     data-bind="visible: !isEmptyLaborSec() && !isEmptyExpSec() && !isEmptyUsedPartsSec() && !isEmptyReturnPartsSec()">
+    <span class="icon-time-spent" aria-hidden="true"></span>
+    <section role="region" tabindex="0">
+        <h2 id="main-heading" class="oj-flex-bar oj-sm-align-items-center sm-screen message-style">Please report your service summary</h2>
+        <span id="sub-title" class="margin-top-8x" role="heading" aria-level="3">You can add Labor Hours, Expense Charges, Installed Parts and Part Returns details</span>
+    </section>
+    <oj-menu-button id="menuButton1" chroming="outlined" class="margin-top-16x">
+        Add Charges
+        <oj-menu id="debriefMenu1" slot="menu" on-oj-menu-action="[[menuItemAction]]">
+            <oj-option id="iconFont5" value="labor">Labor</oj-option>
+            <oj-option id="iconFont6" value="expenses">Expenses</oj-option>
+            <oj-option id="iconFont7" value="addParts">Add Parts</oj-option>
+            <oj-option id="iconFont8" value="returnParts">Return Parts</oj-option>
+        </oj-menu>
+    </oj-menu-button>
+
+</div>
+<div data-bind="visible: isEmptyLaborSec() || isEmptyExpSec() || isEmptyUsedPartsSec() || isEmptyReturnPartsSec()">
+    <div class="oj-flex oj-sm-flex-direction-column dashboard-container">
+        <!-- Fixed Add Charges Button -->
+        <div class="oj-flex oj-sm-align-self-flex-end oj-diagram-overview-content">
+            <div class="add-charge-button">
+                <oj-menu-button id="menuButton2" chroming="outlined">
+                    Add Charges
+                    <oj-menu id="debriefMenu2" slot="menu" on-oj-menu-action="[[menuItemAction]]" role="tablist">
+                        <oj-option id="iconFont51" value="labor" role="tab" aria-selected="false">Labor</oj-option>
+                        <oj-option id="iconFont61" value="expenses" role="tab" aria-selected="false">Expenses</oj-option>
+                        <oj-option id="iconFont71" value="addParts" role="tab" aria-selected="false">Add Parts</oj-option>
+                        <oj-option id="iconFont81" value="returnParts" role="tab" aria-selected="false">Return Parts</oj-option>
+                    </oj-menu>
+                </oj-menu-button>
+            </div>
+        </div>
+        <div class="scrollable-content oj-sm-flex-1">
+            <div class="oj-flex plugin-main-container">
+                <oj-dialog id="modalDialog" aria-label="Confirm Deletion Dialog" class="outbound-dialog min-height-body" cancel-behavior="none"
+                           drag-affordance="none" aria-describedby="desc">
+                    <div class="oj-sm-flex-wrap-nowrap oj-flex" slot="header">
+                        <div class="oj-flex oj-sm-align-items-flex-start oj-sm-flex-wrap-nowrap oj-sm-justify-content-space-around oj-flex-item oj-sm-flex-initial">
+                            <oj-bind-text class="oj-flex-item oj-sm-flex-initial outbound-dialog-header">
+                                <oj-bind-text value="[[ dialogHeading ]]"></oj-bind-text>
+                                <div class="oj-typography-body-md oj-sm-padding-5x-vertical"><oj-bind-text value="[[deletePopUpMessage]]"></oj-bind-text></div>
+                            </oj-bind-text>
+                        </div>
+                    </div>
+                    <div slot="footer">
+                        <div class="outbound-form-footer">
+                            <div>
+                                <oj-button id="cancelButton" on-oj-action="[[closeDialog]]">Cancel</oj-button>
+                                <oj-button :id="[[currentItemId]]" chroming="callToAction"
+                                           on-oj-action="[[deleteSelectedItem.bind($data)]]">
+                                    Delete
+                                </oj-button>
+                            </div>
+                        </div>
+                    </div>
+                </oj-dialog>
+                <div class="oj-flex-item oj-xl-web-padding-start dashboard-main-content-padding">
+                    <!-- Time and Labor -->
+                    <section data-bind="visible: isEmptyLaborSec()" role="region">
+                        <h3 id="laborHeading" class="oj-typography-heading-md oj-flex-bar oj-sm-align-items-center custom-font-style">
+                            <div class="oj-flex-item">Labor</div>
+                        </h3>
+                        <oj-list-view data="[[laborDataProvider]]" aria-label="Labor" class="dashboard-list oj-listview-item-padding-off"
+                                      gridlines.item="visibleExceptLast" selection-mode="none" item.focusable="false">
+                            <template slot="itemTemplate" data-oj-as="item">
+                                <oj-list-item-layout>
+                                    <div class="oj-flex flex-no-wrap">
+                                        <div class="oj-flex-item oj-sm-7 oj-helper-overflow-wrap-anywhere">
+                                            <div>
+                                                <span class="name">
+                                                    <oj-bind-text value="[[item.data.item_label]]"></oj-bind-text>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span class="oj-typography-body-xs oj-text-color-secondary">
+                                                    <oj-bind-text value="[[item.data.activity_text]]"></oj-bind-text>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="oj-flex-item oj-sm-flex-1">
+                                            <span class="oj-typography-body-sm oj-text-color-primary">
+                                                <oj-bind-text value="[[item.data.duration]]"></oj-bind-text>
+                                            </span>
+                                        </div>
+                                        <div class="delete-button-spacing">
+                                            <oj-button class="info-button-icon" aria-label="delete" chroming="borderless"
+                                                       :id="[[item.data.id + ',labor']]"
+                                                       on-oj-action="[[ openDialog.bind($data, 'labor') ]]" display="icons">
+                                                <span slot="startIcon" class="delete-image"></span>
+                                            </oj-button>
+                                        </div>
+                                    </div>
+                                </oj-list-item-layout>
+                            </template>
+                        </oj-list-view>
+                    </section>
+                    <!-- Expenses -->
+                    <section data-bind="visible: isEmptyExpSec()" role="region">
+                        <h3 id="expensesHeading" class="oj-typography-heading-md oj-flex-bar oj-sm-align-items-center padding-top-20px custom-font-style">
+                            <div class="oj-flex-item">Expenses</div>
+                        </h3>
+                        <oj-list-view data="[[expenseDataProvider]]" aria-label="Expenses" class="dashboard-list oj-listview-item-padding-off"
+                                      gridlines.item="visibleExceptLast" selection-mode="none" item.focusable="false">
+                            <template slot="itemTemplate" data-oj-as="item">
+                                <oj-list-item-layout>
+                                    <div class="oj-flex flex-no-wrap">
+                                        <div class="oj-flex-item oj-sm-7 oj-helper-overflow-wrap-anywhere">
+                                            <div>
+                                                <span class="name">
+                                                    <oj-bind-text value="[[item.data.item_label]]"></oj-bind-text>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span class="oj-typography-body-xs oj-text-color-secondary">
+                                                    <oj-bind-text value="[[item.data.activity_text]]"></oj-bind-text>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="oj-flex-item oj-sm-flex-1">
+                                            <span class="oj-typography-body-sm oj-text-color-primary">
+                                                <oj-bind-text value="[[item.data.currency_sign]]"></oj-bind-text>
+                                            </span>
+                                            <span class="oj-typography-body-sm oj-text-color-primary">
+                                                <oj-bind-text value="[[item.data.amount]]"></oj-bind-text>
+                                            </span>
+                                        </div>
+                                        <div class="delete-button-spacing">
+                                            <oj-button aria-label="delete" chroming="borderless"
+                                                       :id="[[item.data.id + ',expenses']]"
+                                                       on-oj-action="[[ openDialog.bind($data, 'expenses') ]]" display="icons">
+                                                <span slot="startIcon" class="delete-image"></span>
+                                            </oj-button>
+                                        </div>
+                                    </div>
+                                </oj-list-item-layout>
+                            </template>
+                        </oj-list-view>
+                    </section>
+                    <!-- Added Parts -->
+                    <section data-bind="visible: isEmptyUsedPartsSec()" role="region">
+                        <h3 id="addedPartsHeading" class="oj-typography-heading-md oj-flex-bar oj-sm-align-items-center padding-top-20px custom-font-style">
+                            <div class="oj-flex-item">Added Parts</div>
+                        </h3>
+                        <oj-list-view data="[[usedPartsDataSource]]" aria-label="Added Parts"
+                                      class="oj-list-view--margin dashboard-list listview-container-overflow oj-listview-item-padding-off" selection-mode="none"
+                                      item.focusable="false">
+                            <template slot="itemTemplate" data-oj-as="item">
+                                <oj-list-item-layout>
+                                    <div class="oj-flex flex-no-wrap">
+                                        <div class="oj-flex-item oj-sm-7 oj-helper-overflow-wrap-anywhere">
+                                            <div>
+                                                <span class="oj-text-md oj-text-color-primary">
+                                                    <oj-bind-text value="[[item.data.inventory.get('part_item_number_rev')]]"></oj-bind-text>
+                                                </span>
+                                            </div>
+                                            <div class="oj-typography-body-sm oj-text-color-secondary"
+                                                 data-bind="if: item.data.inventory.get('invsn')">
+                                                <oj-bind-text value="[[item.data.inventory.get('invsn')]]"></oj-bind-text>
+                                            </div>
+                                            <div class="oj-typography-body-sm oj-text-color-secondary">
+                                                <oj-bind-text value="[[item.data.serviceActivityUsed]]"></oj-bind-text>
+                                            </div>
+                                        </div>
+                                        <div class="oj-flex-item oj-sm-flex-1">
+                                            <span class="oj-typography-body-sm oj-text-color-primary">
+                                                <oj-bind-text value="[[item.data.measuredQuantity]]"></oj-bind-text>
+                                            </span>
+                                        </div>
+                                        <div class="delete-button-spacing">
+                                            <oj-button aria-label="delete" chroming="borderless"
+                                                       :id="[[item.data.id + ',usedParts']]"
+                                                       on-oj-action="[[ openDialog.bind($data, 'usedParts') ]]" display="icons">
+                                                <span slot="startIcon" class="delete-image"></span>
+                                            </oj-button>
+                                        </div>
+                                    </div>
+                                </oj-list-item-layout>
+                            </template>
+                        </oj-list-view>
+                    </section>
+                    <!-- Returned Parts -->
+                    <section data-bind="visible: isEmptyReturnPartsSec()" role="region">
+                        <h3 id="returnedPartsHeading" class="oj-typography-heading-md oj-flex-bar oj-sm-align-items-center padding-top-20px custom-font-style">
+                            <div class="oj-flex-item">Returned Parts</div>
+                        </h3>
+                        <oj-list-view data="[[returnedPartsDataSource]]" aria-label="Returned Parts"
+                                      class="dashboard-list listview-container-overflow oj-listview-item-padding-off">
+                            <template slot="itemTemplate" data-oj-as="item">
+                                <oj-list-item-layout>
+                                    <div class="oj-flex flex-no-wrap">
+                                        <div class="oj-flex-item oj-sm-7 oj-helper-overflow-wrap-anywhere">
+                                            <div>
+                                                <span class="oj-text-md oj-text-color-primary">
+                                                    <oj-bind-text value="[[item.data.inventory.get('part_item_number_rev')]]"></oj-bind-text>
+                                                </span>
+                                            </div>
+                                            <div class="oj-typography-body-sm oj-text-color-secondary"
+                                                 data-bind="if: item.data.inventory.get('invsn')">
+                                                <oj-bind-text value="[[item.data.inventory.get('invsn')]]"></oj-bind-text>
+                                            </div>
+                                            <div class="oj-typography-body-sm oj-text-color-secondary">
+                                                <oj-bind-text value="[[item.data.serviceActivityReturned]]"></oj-bind-text>
+                                            </div>
+                                        </div>
+                                        <div class="oj-flex-item oj-sm-flex-1">
+                                            <span class="oj-typography-body-sm oj-text-color-primary">
+                                                <oj-bind-text value="[[item.data.measuredQuantity]]"></oj-bind-text>
+                                            </span>
+                                        </div>
+                                        <div class="delete-button-spacing">
+                                            <oj-button aria-label="delete" chroming="borderless"
+                                                       :id="[[item.data.id + ',returnParts']]"
+                                                       on-oj-action="[[ openDialog.bind($data, 'returnParts') ]]" display="icons">
+                                                <span slot="startIcon" class="delete-image"></span>
+                                            </oj-button>
+                                        </div>
+                                    </div>
+                                </oj-list-item-layout>
+                            </template>
+                        </oj-list-view>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="custom-button-bar">
+            <oj-button class="padding-all-16x" chroming="outlined" on-click="[[onSaveButtonClick.bind($data)]]">
+                Save
+            </oj-button>
+            <oj-button chroming="callToAction" on-click="[[onPreviewInvoiceButtonClick.bind($data)]]" >
+                Continue
+            </oj-button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,142 @@
+<!--
+Oracle Field Service Debriefing plugin
+
+Copyright (c) 2023, Oracle and/or its affiliates.
+Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
+-->
+<div class="oj-flex oj-padding-top oj-md-padding-4x-vertical plugin-main-container charges-main-container">
+
+    <div class="oj-sm-12 oj-flex-item oj-sm-padding-2x-horizontal">
+
+        <h3> Add Part </h3>
+
+        <oj-validation-group id="tracker">
+            <!-- ko if: !selectedInventory() -->
+
+            <div class="oj-flex padding-all-16x margin-top-16x">
+                <div class="oj-flex-item">
+                    <oj-input-search class="search-parts-catalog"
+                                     placeholder="Search Part"
+                                     value="{{searchSubstring}}">
+                    </oj-input-search>
+                </div>
+            </div>
+
+            <oj-list-view class="oj-margin-top dashboard-list" data="[[searchResultsDataProvider]]"
+                          data-bind="visible: !searchSubstringIsEmpty()" selection="{{listViewSelection}}"
+                          selection-mode="single">
+                <template slot='itemTemplate'>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item">
+                            <div>
+                                <span class="oj-text-md oj-text-primary-color"
+                                      data-bind="textHighlighted: $current.data.inventory.get('part_item_number_rev'), searchString: searchSubstringDebounced"
+                                      data-bind="text: $current.data.measuredQuantity">
+                                </span>
+                            </div>
+                            <div class="oj-text-xs oj-text-tertiary-color" data-bind="if: $current.data.invsn">
+                                <span data-bind="text: $current.data.invsn"></span>
+                            </div>
+                            <div class="oj-text-sm oj-text-secondary-color">
+                                <span data-bind="textHighlighted: $current.data.inventory.get('part_item_desc'), searchString: searchSubstringDebounced"></span>
+                            </div>
+                            <div class="oj-text-xs oj-text-tertiary-color"
+                                 data-bind="if: $current.data.dispositionText">
+                                <span data-bind="text: $current.data.dispositionText"></span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </oj-list-view>
+
+            <!-- /ko -->
+
+            <!-- ko if: selectedInventory -->
+
+            <div class="padding-all-16x margin-top-16x">
+                <div class="oj-flex">
+                    <div class="oj-flex-item">
+                        <div class="oj-text-md oj-text-primary-color">
+                            <span data-bind="text: selectedInventory().inventory.get('part_item_number_rev')"></span>
+                            <span data-bind="text: selectedInventory().measuredQuantity" style="float:right"></span>
+                        </div>
+                        <div class="oj-text-sm oj-text-secondary-color">
+                            <span data-bind="text: selectedInventory().inventory.get('part_item_desc')"></span>
+                        </div>
+                        <div class="oj-text-xs oj-text-tertiary-color"
+                             data-bind="if: selectedInventory().dispositionText">
+                            <span data-bind="text: selectedInventory().dispositionText"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="oj-form margin-top-16x oj-md-labels-inline padding-all-16x">
+                <div class="oj-flex">
+                    <div class="oj-flex-item margin-top-16x">
+                        <oj-combobox-one data="[[activityEnumArray]]"
+                                         id="activity"
+                                         label-hint="Billing Type"
+                                         messages-custom="[[selectMessagesCustomBillingType]]"
+                                         required="true"
+                                         value="{{activityId}}">
+                            <oj-bind-for-each data="[[activityEnumArray]]">
+                                <template>
+                                    <oj-option value="[[$current.data.value]]">
+                                        <oj-bind-text value="[[$current.data.label]]"></oj-bind-text>
+                                    </oj-option>
+                                </template>
+                            </oj-bind-for-each>
+                        </oj-combobox-one>
+                    </div>
+                </div>
+
+                <oj-bind-if test="[[selectedInventory().inventory.get('invtype') == invTypePart]]">
+                    <div class="oj-flex">
+                        <div class="oj-flex-item margin-top-16x padding-all-16x">
+                            <oj-input-number class="input-wide"
+                                             id="quantity"
+                                             label-hint="Quantity"
+                                             min="1"
+                                             required="true"
+                                             step="1"
+                                             value="{{quantity}}">
+                            </oj-input-number>
+                        </div>
+                    </div>
+                </oj-bind-if>
+                <oj-bind-if test="[[selectedInventory().inventory.get('invtype') == invTypePartSN]]">
+                    <div class="oj-form oj-md-labels-inline">
+                        <oj-combobox-one class="input-wide margin-top-16x"
+                                         data="[[invSerialNumArray]]"
+                                         id="serialnum"
+                                         label-hint="Serial Number"
+                                         messages-custom="[[selectMessagesCustomSerial]]"
+                                         required="true"
+                                         value="{{serialNum}}">
+                            <oj-bind-for-each data="[[invSerialNumArray]]">
+                                <template>
+                                    <oj-option value="[[$current.data.value]]">
+                                        <oj-bind-text value="[[$current.data.label]]"></oj-bind-text>
+                                    </oj-option>
+                                </template>
+                            </oj-bind-for-each>
+                        </oj-combobox-one>
+                    </div>
+                </oj-bind-if>
+            </div>
+
+
+            <!-- /ko -->
+        </oj-validation-group>
+        <div class="screen-actions oj-margin-vertical">
+            <oj-button chroming="outlined" class="padding-all-16x margin-bottom-16px margin-top-40px"
+                       on-click='[[dismiss.bind($data)]]'>Back
+            </oj-button>
+            <oj-button chroming="callToAction" class="padding-all-16x margin-bottom-16px margin-top-40px"
+                       class="oj-button-primary" data-bind="visible: selectedInventory"
+                       on-click="[[submit.bind($data)]]">Submit
+            </oj-button>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="oj-flex oj-sm-flex-direction-column plugin-main-container">
+
+    <h2 class="oj-typography-heading-md">Test Flow Screen</h2>
+
+    <oj-button chroming="outlined" on-oj-action="[[addAction]]">
+        Add Action
+    </oj-button>
+
+    <div data-bind="foreach: actions" class="oj-sm-margin-top-4x">
+
+        <div class="oj-panel oj-sm-padding-4x oj-sm-margin-bottom-4x">
+
+            <oj-input-text label-hint="Field 1"
+                           value="{{field1}}">
+            </oj-input-text>
+
+            <oj-input-text label-hint="Field 2"
+                           value="{{field2}}">
+            </oj-input-text>
+
+            <oj-input-text label-hint="Field 3"
+                           value="{{field3}}">
+            </oj-input-text>
+
+            <oj-input-text label-hint="Field 4"
+                           value="{{field4}}">
+            </oj-input-text>
+
+        </div>
+
+    </div>
+
+    <div class="oj-flex oj-sm-justify-content-flex-end">
+        <oj-button chroming="callToAction"
+                   on-oj-action="[[saveActions]]">
+            Save
+        </oj-button>
+    </div>
+
+</div>

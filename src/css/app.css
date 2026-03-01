@@ -1,0 +1,714 @@
+/*
+** Oracle Field Service Debriefing plugin
+**
+** Copyright (c) 2023, Oracle and/or its affiliates.
+** Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
+*/
+
+html {
+    font-size: 1em;
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+.plugin-main-container {
+    max-width: 1070px;
+    padding-left: 25%;
+}
+
+@media all and (max-width: 480px) {
+    .plugin-main-container {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+}
+
+@media all and (max-width: 1024px) {
+    .plugin-main-container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+
+.bold-text {
+    font-weight: bold;
+}
+
+.invoice-container {
+    padding-top:32px;
+    font-family: Oracle Sans, sans-serif;
+}
+
+.icon-remove {
+    display: block;
+    padding: 0 3px !important;
+    width: 32px;
+    height: 32px;
+    background: url("images/app_sprite.svg") -72px -32px no-repeat;
+}
+
+.oj-active .icon-remove {
+    background: url("images/app_sprite.svg") 0 -64px no-repeat;
+}
+
+
+.flex-reverse {
+    flex-direction: row-reverse;
+}
+
+.input-wide .oj-select {
+    max-width: 100%;
+}
+
+.dashboard-list .oj-listview-item.oj-hover {
+    background-color: transparent;
+}
+
+
+
+canvas {
+    /* TODO refactor margin */
+    margin-top: 10px;
+    border: 1px solid #dfe4e7;
+    border-radius: 2px;
+    position: relative;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    touch-action: none;
+    display: block;
+    width: 100%;
+}
+
+.upper_invoice_block {
+    flex-direction: column;
+}
+
+.invoice_block {
+    padding-top: 8px;
+}
+
+.report-title-left {
+    font-family: Oracle Sans, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #161513;
+    opacity: 65%;
+    text-align: left;
+}
+.report-customer-address {
+    text-align: left;
+}
+
+.report-technician-address {
+    text-align: right;
+}
+.report-value{
+    font-family: Oracle Sans, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #161513;
+}
+.name-value{
+    font-family: Oracle Sans, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #161513;
+}
+
+.report-title-main{
+    font-family: Oracle Sans, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #161513;
+    text-align: left;
+    padding-top:32px;
+    padding-bottom:16px;
+}
+
+.total-text{
+    font-family: Oracle Sans, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #161513;
+    text-align: left;
+    padding-top: 8px;
+}
+
+.invoice{
+    max-width: 100%;
+}
+
+.report-value-main{
+    font-family: Oracle Sans, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #161513;
+    text-align: left;
+    padding-bottom:16px;
+}
+.report-title-right {
+    font-family: Oracle Sans, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #161513;
+    opacity: 65%;
+    text-align: right;
+}
+
+.line_after {
+    left: 0;
+    content: " ";
+    border-bottom: 1px solid grey;
+    width: 100%;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.customer_text {
+    font-size: 12px;
+}
+
+.invoice-header {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.invoice-header-logo {
+    background-repeat: no-repeat;
+    width: 150px;
+    height: 60px;
+    background-size: contain;
+}
+
+.invoice-header-logo-default {
+    background-image: url('images/logo.svg');
+    background-repeat: no-repeat;
+    width: 150px;
+    height: 50px;
+    background-size: contain;
+}
+
+.invoice-title {
+    display: flex;
+    justify-content: center;
+    font-family: Oracle Sans, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: left;
+    color: #161513;
+    padding-bottom: 24px;
+    padding-top: 16px
+}
+.invoice-signature-block {
+    padding-top: 8px
+}
+.icon-inventoty-install {
+    display: block;
+    padding: 0 3px !important;
+    width: 32px;
+    height: 32px;
+    padding-right: 10px;
+}
+
+.icon-inventoty-deinstall {
+    display: block;
+    padding: 0 3px !important;
+    width: 32px;
+    height: 32px;
+    padding-right: 10px;
+}
+
+.icon-time-spent {
+    display: block;
+    padding: 0 3px !important;
+    width: 32px;
+    height: 32px;
+    background-color: transparent;
+    padding-right: 10px;
+}
+
+.icon-expenses {
+    display: block;
+    padding: 0 3px !important;
+    width: 32px;
+    height: 32px;
+    background-color: transparent;
+    padding-right: 10px;
+}
+
+.button_clear_canvas {
+    padding-top: 40px;
+    padding-top: 8px;
+}
+
+.screen-actions {
+    text-align: right;
+}
+
+.oj-flex > .actions-container {
+    margin: 8px -10px;
+}
+
+.dashboard-actions .oj-button {
+    margin-top: 8px;
+}
+
+.button-add {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 0;
+    cursor: pointer;
+    padding: 0;
+}
+
+.button-add.oj-button .oj-button-button {
+    padding: 0;
+    border-radius: 0;
+}
+
+.button-add.oj-button.oj-hover .oj-button-button {
+    border-color: transparent !important;
+    background-color: transparent !important;
+}
+
+.button-add.oj-button.oj-active .oj-button-button {
+    background-color: #000000 !important;
+}
+
+.hidden {
+    display: none;
+}
+
+part-preview {
+    display: block;
+}
+part-preview .highlight {
+    background: #ffe188;
+}
+part-preview .inventory-details-container {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    -webkit-tap-highlight-color: transparent;
+}
+part-preview .inventory-details-container--clickable {
+    cursor: pointer;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+part-preview .inventory-details-container--clickable:active .inventory-title,
+part-preview .inventory-details-container--clickable:active .inventory-property-label,
+part-preview .inventory-details-container--clickable:active .inventory-property-value {
+    color: #fff;
+}
+part-preview .inventory-details-container--clickable:active .highlight {
+    background: transparent;
+}
+part-preview .inventory-details {
+    display: flex;
+}
+part-preview .inventory-quantity-block {
+    padding: 16px 16px 0;
+}
+part-preview .inventory-image-container {
+    flex: 0 0 140px;
+    overflow: hidden;
+    min-height: 80px;
+}
+@media all and (max-width: 1024px) {
+    part-preview .inventory-image-container {
+        flex: 0 0 80px;
+    }
+}
+@media all and (max-width: 480px) {
+    part-preview .inventory-image-container {
+        min-height: 48px;
+        flex: 0 0 48px;
+    }
+}
+part-preview .inventory-image-container--no-image {
+    background: url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%20standalone%3D%22no%22%3F%3E%0A%3Csvg%0A%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20version%3D%221.1%22%0A%20%20%20viewBox%3D%220%200%2031.749999%2031.750001%22%0A%20%20%20height%3D%22120%22%0A%20%20%20width%3D%22120%22%3E%0A%20%20%3Cg%0A%20%20%20%20%20transform%3D%22translate(0%2C-265.24999)%22%0A%20%20%20%20%20id%3D%22layer1%22%3E%0A%20%20%20%20%3Cpath%0A%20%20%20%20%20%20%20id%3D%22rect853%22%0A%20%20%20%20%20%20%20d%3D%22m%2015.874999%2C267.11233%20-12.9640649%2C7.57835%20v%2012.96406%20l%2012.9640649%2C7.48482%2012.964067%2C-7.48482%20v%20-12.96406%20z%22%0A%20%20%20%20%20%20%20style%3D%22color%3A%23000000%3Bclip-rule%3Anonzero%3Bdisplay%3Ainline%3Boverflow%3Avisible%3Bvisibility%3Avisible%3Bopacity%3A1%3Bisolation%3Aauto%3Bmix-blend-mode%3Anormal%3Bcolor-interpolation%3AsRGB%3Bcolor-interpolation-filters%3AlinearRGB%3Bsolid-color%3A%23000000%3Bsolid-opacity%3A1%3Bfill%3Anone%3Bfill-opacity%3A1%3Bfill-rule%3Anonzero%3Bstroke%3A%23cccccc%3Bstroke-width%3A1.05833328%3Bstroke-linecap%3Abutt%3Bstroke-linejoin%3Amiter%3Bstroke-miterlimit%3A4%3Bstroke-dasharray%3Anone%3Bstroke-dashoffset%3A0%3Bstroke-opacity%3A1%3Bcolor-rendering%3Aauto%3Bimage-rendering%3Aauto%3Bshape-rendering%3Aauto%3Btext-rendering%3Aauto%3Benable-background%3Aaccumulate%22%20%2F%3E%0A%20%20%20%20%3Cpath%0A%20%20%20%20%20%20%20id%3D%22rect876%22%0A%20%20%20%20%20%20%20d%3D%22m%2011.145572%2C269.87702%20-3.2308089%2C1.88825%2012.9645839%2C7.57835%20v%204.27623%20l%203.230292%2C-1.86501%20v%20-4.29948%20z%22%0A%20%20%20%20%20%20%20style%3D%22color%3A%23000000%3Bclip-rule%3Anonzero%3Bdisplay%3Ainline%3Boverflow%3Avisible%3Bvisibility%3Avisible%3Bopacity%3A1%3Bisolation%3Aauto%3Bmix-blend-mode%3Anormal%3Bcolor-interpolation%3AsRGB%3Bcolor-interpolation-filters%3AlinearRGB%3Bsolid-color%3A%23000000%3Bsolid-opacity%3A1%3Bfill%3A%23cccccc%3Bfill-opacity%3A1%3Bfill-rule%3Anonzero%3Bstroke%3Anone%3Bstroke-width%3A0.26499999%3Bstroke-linecap%3Abutt%3Bstroke-linejoin%3Amiter%3Bstroke-miterlimit%3A4%3Bstroke-dasharray%3Anone%3Bstroke-dashoffset%3A0%3Bstroke-opacity%3A1%3Bcolor-rendering%3Aauto%3Bimage-rendering%3Aauto%3Bshape-rendering%3Aauto%3Btext-rendering%3Aauto%3Benable-background%3Aaccumulate%22%20%2F%3E%0A%20%20%20%20%3Cpath%0A%20%20%20%20%20%20%20d%3D%22m%2015.87497%2C282.26901%202.9e-5%2C12.87054%20m%2012.964123%2C-20.44887%20-12.964153%2C7.57833%20-12.9641622%2C-7.57833%22%0A%20%20%20%20%20%20%20style%3D%22opacity%3A1%3Bvector-effect%3Anone%3Bfill%3Anone%3Bfill-opacity%3A1%3Bfill-rule%3Aevenodd%3Bstroke%3A%23cccccc%3Bstroke-width%3A1.05833328%3Bstroke-linecap%3Abutt%3Bstroke-linejoin%3Amiter%3Bstroke-miterlimit%3A4%3Bstroke-dasharray%3Anone%3Bstroke-dashoffset%3A0%3Bstroke-opacity%3A1%22%0A%20%20%20%20%20%20%20id%3D%22path958%22%20%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A") no-repeat center top;
+    background-size: 80px;
+}
+@media all and (max-width: 480px) {
+    part-preview .inventory-image-container--no-image {
+        background-size: 48px;
+    }
+}
+part-preview .inventory-image {
+    width: 100%;
+}
+part-preview .inventory-information {
+    flex: 1 1 100%;
+    overflow: hidden;
+}
+part-preview .inventory-title {
+    font-size: 19px;
+    margin-bottom: 8px;
+    display: inline-block;
+}
+part-preview .inventory-properties {
+    font-size: 14px;
+}
+part-preview .inventory-properties--full {
+    padding-top: 12px;
+}
+part-preview .inventory-property-label {
+    color: #808080;
+}
+part-preview .inventory-property-value {
+    color: #4F4F4F;
+}
+
+.grid {
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    margin-top: 16px;
+}
+@media all and (max-width: 480px) {
+    .grid {
+        padding-right: 0;
+        margin-left: -4px;
+        margin-right: -4px;
+    }
+}
+.grid--without-border {
+    border: none;
+}
+.grid--without-border .grid-row {
+    box-shadow: 0 1px 0;
+}
+.grid-row {
+    min-height: 56px;
+    box-sizing: border-box;
+    box-shadow: 0 17px 0 -16px;
+}
+@media all and (max-width: 768px) {
+    .grid-row {
+        box-shadow: 0 9px 0 -8px;
+    }
+}
+.grid-row--without-border {
+    box-shadow: none;
+}
+.grid-row:last-child {
+    box-shadow: none;
+}
+
+.participants-block {
+    justify-content: space-between;
+}
+
+.participants-block > .oj-flex-item {
+    flex: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.participants-block .oj-flex .oj-flex-item + .oj-flex-item {
+    padding-left: 1rem;
+}
+
+@media all and (max-width: 480px) {
+    .participants-block > .oj-flex-item {
+        flex: auto;
+    }
+
+    .participants-block .oj-flex .oj-flex-item {
+        flex-basis: 30%;
+    }
+
+    .participants-block .oj-flex .oj-flex-item + .oj-flex-item {
+        flex-basis: 60%;
+        padding-left: 0;
+    }
+}
+
+.watermark {
+    position: absolute;
+    top: 0.7rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    display: block;
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+
+.watermark:after {
+    content: "Powered by OFSC Mobile Plugin Framework"
+}
+
+@media all and (max-width: 768px) {
+    .watermark {
+        position: static;
+        margin: 8px 0 -8px;
+    }
+}
+
+@media all and (max-width: 768px) {
+    .sm-screen.message-style {
+        font-family: Georgia, sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+        color: #161513;
+        line-height: 28px;
+        text-align: left;
+    }
+ }
+
+.message-style {
+    font-family: Georgia, sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #161513;
+    line-height: 36px;
+    text-align: left;
+}
+
+.custom-font-style {
+    font-weight: bold;
+}
+
+.padding-10x {
+    padding-top: 10px
+}
+
+.float-padding-right-16x {
+    float: none;
+    margin-right: 16px;
+}
+
+.dashboard-flex-styles {
+    display: flex;
+    flex-direction: column;
+}
+
+.delete-image:before {
+    content: ' ';
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    padding-right: 5px;
+    vertical-align: super;
+    background: url("images/app_sprite.svg") -83px -70px no-repeat;
+}
+
+.padding-of-buttons {
+    padding-top: 40px;
+    padding-bottom: 16px;
+    padding-right:16px
+}
+
+.button-style-flex {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    padding-right: 16px;
+    padding-bottom: 16px;
+    float: right;
+}
+.invoice-buttons {
+    justify-content: right;
+}
+
+.button-inner-style-flex {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.add-charge-button {
+    padding : 16px !important
+}
+
+.dashboard-main-content-padding {
+    padding-left: var(--layout-content-padding-l) !important;
+
+}
+
+.delete-button-spacing {
+    margin-left : 16px;
+}
+
+.empty-dashboard {
+    align-items: flex-start;
+}
+
+.margin-top-8x {
+    margin-top:8px;
+}
+
+.margin-left-16x {
+    margin-left : 16px;
+}
+
+.margin-top-16x {
+    margin-top: 16px;
+}
+
+.padding-all-16x {
+    margin-right:16px;
+}
+
+.oj-flex-labor-time{
+    display: flex;
+    flex-direction: row;
+}
+
+#startTimeEl{
+    display: flex;
+    flex-direction: column;
+    margin-right: 16px;
+
+}
+
+#endTimeEl{
+    display: flex;
+    flex-direction: column;
+}
+
+.oj-duration{
+    font-size: var(--oj-label-inside-edge-font-size);
+    font-weight: var(--oj-label-inside-edge-font-weight);
+}
+
+.dashboard-list .oj-listview-item-layout {
+
+    display: flex;
+    align-items: center;
+    min-height: var(--oj-collection-list-row-height);
+    box-sizing: border-box;
+    padding-left: 0px;
+    padding-right: 0px;
+    background-image: none;
+}
+
+
+
+
+.dashboard-list .oj-listitemlayout-grid {
+    display: grid;
+    grid-template-areas: "selector leading textslots extra" ".... .... quaternary navigation";
+    grid-template-columns: auto auto minmax(0,1fr) auto;
+    grid-template-rows: minmax(0,1fr) auto;
+    box-sizing: border-box;
+    min-height: var(--oj-collection-list-row-height);
+    padding: 0;
+}
+
+.dashboard-list .listview-container-overflow {
+    overflow: hidden;
+}
+.charges-main-container{
+    display: flex;
+    justify-content: center;
+}
+
+.oj-button{
+    min-height : 36px;
+    display: inline-flex;
+}
+
+.margin-bottom-16px {
+    margin-bottom:16px;
+}
+
+.margin-top-40px {
+    margin-top:40px;
+}
+
+.padding-top-20px {
+    padding-top:20px;
+}
+
+.dashboard-list .oj-listview-no-data-message {
+    padding: 0px;
+    background-color: transparent;
+    min-height: var(--oj-typography-body-md-font-size);
+}
+
+.flex-no-wrap {
+    flex-wrap: nowrap;
+}
+
+.outbound-dialog .outbound-dialog-header {
+    font-size: 1.5em;
+    font-weight: 700;
+    height: 100%;
+    width: 100%;
+}
+
+
+.outbound-form-footer {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 100%;
+    max-height: 100%;
+    height: 100%;
+    padding-top: 8px;
+    -ms-overflow-style: none;  /* hide scrollbar in IE and Edge */
+    scrollbar-width: none;  /* hide scrollbar in Firefox */
+}
+
+.outbound-form-footer .oj-button {
+    padding-left: 16px;
+}
+
+.outbound-dialog .min-height-body {
+    min-height: 20px;
+}
+
+.charges-screen-button{
+    margin-right: auto;
+}
+
+.search-parts-catalog{
+    max-width: none;
+    margin-top: 16px;
+}
+
+.charges-description{
+    font-size: var(--oj-label-inside-edge-font-size);
+    font-weight: var(--oj-label-inside-edge-font-weight);
+}
+
+span.oj-combobox-divider {
+    border-left: none;
+}
+
+.dashboard-container {
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .scrollable-content {
+    overflow-y: auto;
+    max-height: 70vh;
+ }
+
+.custom-button-bar {
+    display: flex !important;
+    justify-content: flex-end !important;
+    padding-right: 16px !important;
+    margin-top: auto;
+}
+.custom-button-bar oj-button:first-child {
+    margin-right: 8px;
+}

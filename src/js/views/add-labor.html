@@ -1,0 +1,113 @@
+<!--
+Oracle Field Service Debriefing plugin
+
+Copyright (c) 2023, Oracle and/or its affiliates.
+Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
+-->
+
+<div class="oj-flex oj-padding-top oj-md-padding-4x-vertical plugin-main-container charges-main-container">
+    <div class="oj-sm-12 oj-flex-item oj-sm-padding-2x-horizontal">
+        <div id="form-container">
+            <h3>Add Labor</h3>
+            <oj-validation-group id="tracker">
+                <div>
+                    <oj-combobox-one class="input-wide margin-top-16x"
+                                     data="[[activityEnumArray]]"
+                                     id="activity"
+                                     label-hint="Billing Type"
+                                     messages-custom="[[selectMessagesCustomBillingType]]"
+                                     required="true"
+                                     value="{{activityId}}"
+                                     value-option="{{preselectLabSvcActVal}}">
+                        <oj-bind-for-each data="[[activityEnumArray]]">
+                            <template>
+                                <oj-option value="[[$current.data.value]]">
+                                    <oj-bind-text value="[[$current.data.label]]"></oj-bind-text>
+                                </oj-option>
+                            </template>
+                        </oj-bind-for-each>
+                    </oj-combobox-one>
+                </div>
+
+                <div>
+                    <oj-combobox-one
+                            class="input-wide margin-top-16x"
+                            data="[[laborItemEnumArray]]"
+                            id="laborItem"
+                            label-hint="Billing Item"
+                            messages-custom="[[selectMessagesCustomBillingItem]]"
+                            on-value-option-changed="[[laborItemChanged]]"
+                            required="true"
+                            value="{{laborItemId}}"
+                            value-option="{{preselectLabItemVal}}">
+                        <oj-bind-for-each data="[[laborItemEnumArray]]">
+                            <template>
+                                <oj-option value="[[$current.data.value]]">
+                                    <oj-bind-text value="[[$current.data.label]]"></oj-bind-text>
+                                </oj-option>
+                            </template>
+                        </oj-bind-for-each>
+                    </oj-combobox-one>
+                </div>
+
+                <div class="oj-flex margin-top-16x">
+                    <oj-label class="oj-text-color-secondary charges-description"
+                              for="itemDescription">
+                        Description
+                    </oj-label>
+                    <oj-input-text id="itemDescription"
+                                   readonly="true"
+                                   value="[[laborItemDescription]]">
+                    </oj-input-text>
+                </div>
+
+                <div>
+                <span class="oj-flex-labor-time margin-top-16x">
+                    <oj-input-time id="startTimeEl"
+                                   label-hint="Start Time"
+                                   on-valid-changed='[[onStartTimeValidChanged]]'
+                                   required="true"
+                                   time-picker='{ "timeIncrement":"00:01:00:00" }'
+                                   value={{startTime}}>
+                    </oj-input-time>
+                    <oj-input-time id="endTimeEl"
+                                   label-hint="End Time"
+                                   messages-custom="{{appMessages}}"
+                                   on-valid-changed='[[onEndTimeValidChanged]]'
+                                   on-value-changed='[[onValueChanged]]'
+                                   required="true"
+                                   time-picker='{ "timeIncrement":"00:01:00:00" }'
+                                   validators="[[[durationValidator]]]"
+                                   value={{endTime}}>
+                    </oj-input-time>
+                </span>
+                </div>
+
+
+                <div class="oj-flex oj-duration" data-bind="visible: durationHours() !== ''">
+                    <div class="oj-flex-item oj-text-color-secondary">
+                        <oj-label class="oj-duration oj-text-color-secondary" for="durationHours">Duration
+                        </oj-label>
+                        <oj-input-text id="durationHours" readonly value="[[durationHours]]"></oj-input-text>
+                    </div>
+                </div>
+
+
+            </oj-validation-group>
+        </div>
+
+        <div class="screen-actions oj-margin-vertical">
+            <oj-button chroming="outlined" class="padding-all-16x margin-bottom-16px margin-top-40px"
+                       on-click='[[onCloseButtonClick.bind($data)]]'>Cancel
+            </oj-button>
+            <oj-button chroming="callToAction"
+                       class="charges-screen-button padding-all-16x margin-bottom-16px margin-top-40px"
+                       disabled="[[isSubmitDisabled]]" id="addItemBtn"
+                       on-click="[[addLabor.bind($data, { activityId: '1', itemId: '1', startTime: '10', endTime: '20', duration: '1h' })]]">
+                Submit
+            </oj-button>
+        </div>
+
+    </div>
+
+</div>

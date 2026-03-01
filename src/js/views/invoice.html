@@ -1,0 +1,388 @@
+<!--
+Oracle Field Service Debriefing plugin
+
+Copyright (c) 2023, Oracle and/or its affiliates.
+Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
+-->
+
+<div class="oj-flex oj-flex-items-pad oj-md-padding-4x-vertical oj-padding-top plugin-main-container invoice">
+    <div class="oj-sm-12 oj-md-8 oj-flex-item oj-sm-padding-2x-horizontal">
+        <div class="invoice-container " id="previewForm">
+            <div class="upper_invoice_block oj-flex">
+                <div class="oj-flex-item">
+                    <div class="oj-flex">
+                        <div class="invoice-header" data-bind="visible: isEmptyLogo()">
+                            <div class="invoice-header-logo"><img :src="[[logoUrl]]" alt="logo"/></div>
+                        </div>
+                        <div class="invoice-header" data-bind="visible: !isEmptyLogo()">
+                            <div class="invoice-header-logo-default">
+                                <div class="invoice-header-logo"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="invoice-title">Time and Labor Report</div>
+            <div class="invoice_block">
+                <div class="participants-block oj-flex flex-no-wrap">
+                    <div class="oj-flex-item report-customer-address">
+                        <div class="oj-flex-item report-title-left">Customer</div>
+                        <div class="oj-flex-item report-value">
+                            <div data-bind="text: customer.name"></div>
+                            <div data-bind="text: stateCityText()"></div>
+                            <div data-bind="text: customer.address"></div>
+                            <div data-bind="text: customer.zip"></div>
+                        </div>
+                    </div>
+                    <div class="oj-flex-item report-technician-address">
+                        <div class="oj-flex-item report-title-right">Technician</div>
+                        <div class="oj-flex-item">
+                            <div data-bind="text: resource.name"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="invoice_block " data-bind="visible: laborItems().length > 0">
+                <div class="oj-flex-item">
+                    <div class="report-title-main">Time Spent</div>
+                </div>
+
+                <div class="oj-flex-item line_after" data-bind="foreach: laborItems">
+                    <div class="oj-margin-vertical report-value-main">
+                        <div class="oj-flex flex-no-wrap align-center">
+                            <div class="oj-flex-item" data-bind="text: item_text"></div>
+                            <div class="oj-flex">
+                                <div  data-bind="text: $parent.formatDuration($data)"></div>
+                            </div>
+                        </div>
+
+                        <div data-bind="text: item_label"></div>
+                        <div class="oj-flex">
+                            <span data-bind="text: $parent.formatTime(startTime)"></span>
+                            <span>&nbsp;-&nbsp;</span>
+                            <span data-bind="text: $parent.formatTime(endTime)"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="oj-flex flex-reverse">
+                    <div class="total-text">
+                        <span>Total:</span>
+                        <span data-bind="text: laborsTotalHours"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="invoice_block " data-bind="visible: expenseItems().length > 0">
+                <div class="oj-flex-item">
+                    <div class="report-title-main">Expenses</div>
+                </div>
+                <div class="oj-flex-item oj-margin-vertical line_after" data-bind="foreach: expenseItems">
+                    <div class="oj-margin-vertical report-value-main">
+                        <div class="oj-flex flex-no-wrap align-center">
+                            <div class="oj-flex-item" data-bind="text: item_text"></div>
+                            <div class="oj-flex">
+                                <span data-bind="text: currency_sign"></span>
+                                <span data-bind="text: amount"></span>
+                            </div>
+                        </div>
+
+                        <div data-bind="text: item_label"></div>
+                    </div>
+                </div>
+
+                <div class="oj-flex-item">
+                    <div class="oj-flex flex-reverse">
+                        <div class="total-text">
+                            <span>Total:</span>
+                            <span data-bind="text: currencySign"></span>
+                            <span data-bind="text: totalExpensesAmount"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="invoice_block line_after" data-bind="visible: usedPartsList.length > 0">
+                <div class="oj-flex-item">
+                    <div class="report-title-main">Parts Added</div>
+                </div>
+
+                <!-- ko foreach: usedPartsList -->
+                <div class="oj-flex-item oj-margin-vertical  report-value-main">
+                    <div class="oj-flex align-center">
+                        <div class="oj-flex-item">
+                            <span data-bind="text: inventory.get('part_item_number_rev')"></span>
+                        </div>
+                        <div class="oj-flex">
+                            <div>
+                                <span data-bind="text: measuredQuantity"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <span data-bind="text: inventory.get('invsn')"></span>
+                    </div>
+                    <div>
+                        <div data-bind="text: inventory.get('part_item_desc')"></div>
+                    </div>
+                </div>
+                <!-- /ko -->
+
+            </div>
+
+            <div class="invoice_block line_after" data-bind="visible: returnedPartsList.length > 0">
+                <div class="oj-flex-item">
+                    <div class="report-title-main">Parts Returned</div>
+                </div>
+
+                <!-- ko foreach: returnedPartsList -->
+                <div class="oj-flex-item oj-margin-vertical report-value-main ">
+                    <div class="oj-flex align-center">
+                        <div class="oj-flex-item">
+                            <span data-bind="text: inventory.get('part_item_number_rev')"></span>
+                        </div>
+                        <div class="oj-flex">
+                            <span data-bind="text: measuredQuantity"></span>
+                        </div>
+                    </div>
+                    <div class="oj-flex">
+                        <span data-bind="text: inventory.get('invsn')"></span>
+                    </div>
+                    <div class="oj-flex flex-no-wrap">
+                        <div data-bind="text: inventory.get('part_item_desc')"></div>
+                    </div>
+                </div>
+                <!-- /ko -->
+
+            </div>
+
+            <!--Signature -->
+            <div class="signature_block oj-flex oj-sm-justify-content-center">
+                <div class="oj-flex-item oj-sm-flex-initial">
+                    <div class="invoice-signature-block" >
+                        <div class="report-title-left">Customer Signature</div>
+                        <div class="report-value-main" data-bind="text: currentDate()"></div>
+                    </div>
+                    <canvas id="canvas_invoice" class="canvas-invoice"></canvas>
+                    <div class="oj-flex-item oj-helper-text-align-start button_clear_canvas oj-helper-text-align-end">
+                        <oj-button id="button_clear_canvas"
+                                   key="key_clear_canvas"
+                                   data-oj-binding-provider="none">Clear</oj-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Print Form -->
+        <div style="position: absolute; left: -10000px;">
+            <div class="invoice-container" id="printableForm">
+                <div class="upper_invoice_block oj-flex">
+                    <div class="oj-flex-item">
+                        <div class="oj-flex">
+                            <div class="invoice-header" data-bind="visible: isEmptyLogo()">
+                                <div class="invoice-header-logo"><img :src="[[logoUrl]]" alt="logo"/></div>
+                            </div>
+                            <div class="invoice-header" data-bind="visible: !isEmptyLogo()">
+                                <div class="invoice-header-logo-default">
+                                    <div class="invoice-header-logo"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invoice-title">Time and Labor Report</div>
+                <div class="invoice_block">
+                    <div class="participants-block oj-flex">
+                        <div class="oj-flex-item report-customer-address">
+                            <div>
+                                <div class="oj-flex-item report-title-left">Customer</div>
+                                <div class="oj-flex-item report-value">
+                                    <div class="name-value" data-bind="text: customer.name"></div>
+                                    <div data-bind="text: stateCityText()"></div>
+                                    <div data-bind="text: customer.address"></div>
+                                    <div data-bind="text: customer.zip"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="oj-flex-item report-technician-address">
+                            <div>
+                                <div class="oj-flex-item report-title-right">Technician</div>
+                                <div class="oj-flex-item">
+                                    <span class="name-value" data-bind="text: resource.name"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invoice_block" data-bind="visible: laborItems().length > 0">
+                    <div class="oj-flex-item">
+                        <div class="report-title-main">Time Spent</div>
+                    </div>
+
+                    <div class="oj-flex-item line_after" data-bind="foreach: laborItems">
+                        <div class="oj-margin-vertical report-value-main">
+                            <div class="oj-flex align-center">
+                                <div class="oj-flex-item" data-bind="text: item_text"></div>
+                                <div class="oj-flex">
+                                    <div data-bind="text: $parent.formatDuration($data)"></div>
+                                </div>
+                            </div>
+
+                            <div data-bind="text: item_label"></div>
+                            <div class="oj-flex">
+                                <span data-bind="text: $parent.formatTime(startTime)"></span>
+                                <span>&nbsp;-&nbsp;</span>
+                                <span data-bind="text: $parent.formatTime(endTime)"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="oj-flex flex-reverse">
+                        <div class="total-text">
+                            <span>Total:</span>
+                            <span data-bind="text: laborsTotalHours"></span>
+                            <span data-bind="text: totalHoursText"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invoice_block" data-bind="visible: expenseItems().length > 0">
+                    <div class="oj-flex-item">
+                        <div class="report-title-main">Expenses</div>
+                    </div>
+                    <div class="oj-flex-item oj-margin-vertical line_after" data-bind="foreach: expenseItems">
+                        <div class="oj-margin-vertical report-value-main">
+                            <div class="oj-flex align-center">
+                                <div class="oj-flex-item " data-bind="text: item_text"></div>
+                                <div class="oj-flex">
+                                    <span data-bind="text: currency_sign"></span>
+                                    <span data-bind="text: amount"></span>
+                                </div>
+                            </div>
+
+                            <div data-bind="text: item_label"></div>
+                        </div>
+                    </div>
+
+                    <div class="oj-flex-item">
+                        <div class="oj-flex flex-reverse">
+                            <div class="total-text">
+                                <span>Total:</span>
+                                <span data-bind="text: currencySign"></span>
+                                <span data-bind="text: totalExpensesAmount"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invoice_block line_after" data-bind="visible: usedPartsList.length > 0">
+                    <div class="oj-flex-item">
+                        <div class="report-title-main">Parts Added</div>
+                    </div>
+
+                    <!-- ko foreach: usedPartsList -->
+                    <div class="oj-flex-item oj-margin-vertical  report-value-main">
+                        <div class="oj-flex align-center">
+                            <div class="oj-flex-item">
+                                <span data-bind="text: inventory.get('part_item_number_rev')"></span>
+                            </div>
+                            <div class="oj-flex">
+                                <div>
+                                    <span data-bind="text: measuredQuantity"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div data-bind="text: inventory.get('invsn')"></div>
+                        </div>
+                        <div>
+                            <div data-bind="text: inventory.get('part_item_desc')"></div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+
+                </div>
+
+                <div class="invoice_block line_after" data-bind="visible: returnedPartsList.length > 0">
+                    <div class="oj-flex-item">
+                        <div class="report-title-main">Parts Returned</div>
+                    </div>
+
+                    <!-- ko foreach: returnedPartsList -->
+                    <div class="oj-flex-item oj-margin-vertical report-value-main ">
+                        <div class="oj-flex align-center">
+                            <div class="oj-flex-item ">
+                                <span data-bind="text: inventory.get('part_item_number_rev')"></span>
+                            </div>
+                            <div class="oj-flex">
+                                <span data-bind="text: measuredQuantity"></span>
+                            </div>
+                        </div>
+                        <div class="oj-flex">
+                            <div data-bind="text: inventory.get('invsn')"></div>
+                        </div>
+                        <div class="oj-flex">
+                            <div data-bind="text: inventory.get('part_item_desc')"></div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+
+                </div>
+
+                <!--Signature -->
+
+                <div class="signature_block oj-flex oj-sm-justify-content-center" style="padding-top: 32px">
+                    <div class="oj-flex-item oj-sm-flex-initial">
+                        <div class="invoice-signature-block">
+                            <div class="report-title-left">Customer Signature</div>
+                            <div data-bind="text: currentDate()"></div>
+                            <canvas id="printableSignatureCanvas" class="canvas-invoice" style="width: 450px; height: 300px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div>
+    <oj-bind-if test="[[deviceType.peek() == 'desktop']]">
+        <div class="invoice-buttons oj-flex oj-sm-12 oj-md-12">
+            <div class="padding-of-buttons">
+                <oj-button class="oj-button-primary" on-click='[[generatePDF.bind($data)]]'
+                           data-oj-binding-provider="none">Download</oj-button>
+            </div>
+            <div class="padding-of-buttons">
+                <oj-button on-click='[[onCloseButtonClick.bind($data)]]'
+                           data-oj-binding-provider="none">Cancel</oj-button>
+            </div>
+            <div class="padding-of-buttons">
+                <oj-button chroming="callToAction" class="oj-button-primary"
+                           on-click="[[onSubmitButtonClick.bind($data)]]"
+                           data-oj-binding-provider="none">Submit</oj-button>
+            </div>
+        </div>
+    </oj-bind-if>
+    <oj-bind-if test="[[deviceType.peek() == 'mobile']]">
+        <div class="invoice-buttons oj-flex oj-sm-12 oj-md-12">
+            <div class="padding-of-buttons">
+                <oj-button class="oj-button-primary" on-click='[[generatePDF.bind($data)]]'
+                           data-oj-binding-provider="none">Share
+                    <span slot="startIcon" class="oj-ux-ico-share"></span>
+                </oj-button>
+            </div>
+            <div class="padding-of-buttons">
+                <oj-button on-click='[[onCloseButtonClick.bind($data)]]'
+                           data-oj-binding-provider="none">Cancel</oj-button>
+            </div>
+            <div class="padding-of-buttons">
+                <oj-button chroming="callToAction" class="oj-button-primary"
+                           on-click="[[onSubmitButtonClick.bind($data)]]"
+                           data-oj-binding-provider="none">Submit</oj-button>
+            </div>
+        </div>
+    </oj-bind-if>
+</div>

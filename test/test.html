@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plugin Sandbox</title>
+    <style type="text/css">
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 16px;
+        }
+
+        button {
+            padding: 8px 12px;
+            margin: 0 8px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+        }
+
+        .receivedMessageJson {
+            background: #e9f5ff;
+            white-space: pre;
+            margin: 10px 10px 20px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+        }
+
+        .sendMessageContainer {
+            display: flex;
+            gap: 40px;
+            padding: 0 20px;
+            margin-top: 20px;
+        }
+
+        .sendMessageItem {
+            flex: auto;
+        }
+
+        #iframeContainer {
+            padding: 50px 100px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <input type="url" size="30" id="openIframeUrl" value="../web/index.html"><button id="openIframeButton">Open iframe</button><button id="closeIframeButton">Close iframe</button>
+</div>
+<div class="sendMessageContainer">
+    <div class="sendMessageItem">
+        <h1>Send message</h1>
+        <textarea id="sendMessageJson"></textarea>
+        <div>
+            <button id="sendMessageButton">Send</button>
+        </div>
+    </div>
+    <div class="sendMessageItem">
+        <h1><input type="checkbox" id="readyRespondMessageCheckbox">Respond to "ready" message</h1>
+        <textarea id="readyRespondMessageJson"></textarea>
+    </div>
+    <div class="sendMessageItem">
+        <h1><input type="checkbox" id="callProcedureRespondMessageCheckbox">Respond to "callProcedure" message</h1>
+        <textarea id="callProcedureRespondMessageJson"></textarea>
+    </div>
+    <div class="sendMessageItem">
+        <h1><input type="checkbox" id="updateRespondMessageCheckbox">Respond to "update" message</h1>
+        <textarea id="updateRespondMessageJson"></textarea>
+    </div>
+    <div class="sendMessageItem">
+        <h1><input type="checkbox" id="closeRespondMessageCheckbox">Respond to "close" message</h1>
+        <textarea id="closeRespondMessageJson"></textarea>
+    </div>
+</div>
+<div id="iframeContainer"></div>
+<h2>Received messages:</h2>
+<div id="receivedMessagesContainer"></div>
+<script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (e) => {
+        const getEl = (id) => document.getElementById(id);
+
+        const openIframeUrlEl = getEl('openIframeUrl');
+
+        const openIframeButtonEl  = getEl('openIframeButton');
+        const sendMessageButtonEl = getEl('sendMessageButton');
+        const closeIframeButtonEl = getEl('closeIframeButton');
+
+        const readyRespondMessageCheckboxEl         = getEl('readyRespondMessageCheckbox');
+        const callProcedureRespondMessageCheckboxEl = getEl('callProcedureRespondMessageCheckbox');
+        const updateRespondMessageCheckboxEl        = getEl('updateRespondMessageCheckbox');
+        const closeRespondMessageCheckboxEl         = getEl('closeRespondMessageCheckbox');
+
+        const sendMessageJsonEl                 = getEl('sendMessageJson');
+        const readyRespondMessageJsonEl         = getEl('readyRespondMessageJson');
+        const callProcedureRespondMessageJsonEl = getEl('callProcedureRespondMessageJson');
+        const updateRespondMessageJsonEl        = getEl('updateRespondMessageJson');
+        const closeRespondMessageJsonEl         = getEl('closeRespondMessageJson');
+
+        const iframeContainerEl  = getEl('iframeContainer');
+        const receivedMessagesContainerEl = getEl('receivedMessagesContainer');
+
+        let messageCount = 0;
+
+        const onMessageRecieved = (messageEv) => {
+            ++messageCount;
+
+            const messageNumberEl = document.createElement('h1');
+            messageNumberEl.innerText = '#' + messageCount;
+
+            receivedMessagesContainerEl.appendChild(messageNumberEl);
+
+            const messageJsonEl = document.createElement('div');
+            let jsonString;
+            let jsonObject;
+
+            if ('string' !== typeof messageEv.data) {
+                jsonString = JSON.stringify(messageEv.data, 0, 4);
+                jsonObject = messageEv.data;
+            } else {
+                jsonString = messageEv.data;
+                jsonObject = JSON.parse(messageEv.data);
+            }
+
+            messageJsonEl.className = 'receivedMessageJson';
+            messageJsonEl.innerText = jsonString;
+            messageJsonEl.id = 'receivedMessageJson-' + messageCount;
+            receivedMessagesContainerEl.appendChild(messageJsonEl);
+
+            const frameEl = getEl('pluginFrame');
+
+            switch (jsonObject.method) {
+                case 'ready':
+                    if (readyRespondMessageCheckboxEl.checked) {
+                        frameEl.contentWindow.postMessage(readyRespondMessageJsonEl.value, '*');
+                    }
+                    break;
+                case 'callProcedure':
+                    if (callProcedureRespondMessageCheckboxEl.checked) {
+                        frameEl.contentWindow.postMessage(callProcedureRespondMessageJsonEl.value, '*');
+                    }
+                    break;
+                case 'update':
+                    if (updateRespondMessageCheckboxEl.checked) {
+                        frameEl.contentWindow.postMessage(updateRespondMessageJsonEl.value, '*');
+                    }
+                    break;
+                case 'close':
+                    if (closeRespondMessageCheckboxEl.checked) {
+                        frameEl.contentWindow.postMessage(closeRespondMessageJsonEl.value, '*');
+                    }
+                    break;
+            }
+        };
+
+        window.addEventListener('message', onMessageRecieved, false);
+
+        openIframeButtonEl.addEventListener('click', () => {
+            const frameEl = document.createElement('iframe');
+
+            frameEl.id = 'pluginFrame';
+            frameEl.src = openIframeUrlEl.value;
+
+            iframeContainerEl.appendChild(frameEl);
+        });
+
+        closeIframeButtonEl.addEventListener('click', () => {
+            const frameEl = getEl('pluginFrame');
+
+            if (frameEl) {
+                frameEl.src = '';
+                frameEl.remove();
+            }
+        });
+
+        sendMessageButtonEl.addEventListener('click', () => {
+            const frameEl = getEl('pluginFrame');
+
+            if (frameEl) {
+                frameEl.contentWindow.postMessage(sendMessageJsonEl.value, '*');
+            }
+        });
+    });
+</script>
+</body>
+</html>

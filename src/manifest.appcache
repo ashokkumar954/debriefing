@@ -1,0 +1,11 @@
+CACHE MANIFEST
+app.css
+local-fonts.css
+app_sprite.svg
+html2pdf.bundle.js
+index.html
+logo.svg
+bundle.js
+
+NETWORK:
+*

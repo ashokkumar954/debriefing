@@ -1,0 +1,164 @@
+<!--
+Oracle Field Service Debriefing plugin
+
+Copyright (c) 2023, Oracle and/or its affiliates.
+Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/
+-->
+
+<div class="oj-flex oj-padding-top oj-md-padding-4x-vertical plugin-main-container charges-main-container">
+
+    <div class="oj-sm-12 oj-flex-item oj-sm-padding-2x-horizontal">
+
+        <h3> Return Part </h3>
+
+        <oj-validation-group id="tracker">
+            <!-- ko if: !selectedInventory() -->
+            <!-- ko if: !isSearchByPartsCatalog() && inventoriesDataProvider.isEmpty() != 'yes'-->
+
+            <oj-list-view class="oj-margin-top dashboard-list margin-top-16x"
+                          data="[[inventoriesDataProvider]]"
+                          selection="{{listViewSelection}}"
+                          selection-mode="single">
+                <template slot='itemTemplate'>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item">
+                            <div>
+                                <span class="oj-text-md oj-text-primary-color"
+                                      data-bind="text: $current.data.inventory.get('part_item_number_rev')"></span>
+                            </div>
+                            <div class="oj-text-sm oj-text-secondary-color">
+                                <span data-bind="text: $current.data.inventory.get('part_item_desc')"></span>
+                            </div>
+                            <div class="oj-text-xs oj-text-tertiary-color"
+                                 data-bind="if: $current.data.dispositionText">
+                                <span data-bind="text: $current.data.dispositionText"></span>
+                            </div>
+                        </div>
+                        <div class="oj-flex-item oj-sm-flex-initial">
+                            <span class="oj-text-md oj-text-tertiary-color"
+                                  data-bind="text: $current.data.measuredQuantity"></span>
+                        </div>
+                    </div>
+                </template>
+            </oj-list-view>
+            <div class="oj-padding-lg-top oj-flex oj-flex-items-pad margin-top-16x">
+                <oj-button on-click="[[searchAtPartsCatalog.bind($data)]]">Search at Parts Catalog</oj-button>
+            </div>
+
+            <!-- /ko -->
+             <!-- ko if: inventoriesDataProvider.isEmpty() == 'yes' || isSearchByPartsCatalog() -->
+            <div class="margin-top-16x oj-flex">
+                <div class="oj-flex-item oj-sm-12">
+                    <oj-input-search class="search-parts-catalog"
+                                     placeholder="Search Parts Catalog"
+                                     value="{{searchRequest}}">
+                    </oj-input-search>
+                </div>
+            </div>
+            <div data-bind="visible: showSearchResults">
+                <div class="no-results" data-bind="visible: noResults">
+                    <div class="no-results-icon"></div>
+                    <div class="text">No parts found</div>
+                </div>
+                <div class="search-results" data-bind="visible: searchResultItems().length">
+                    <div data-bind="foreach: { data: searchResultItems, as: 'item'}">
+                        <div>
+                            <part-preview params="
+                            model: item,
+                            catalogCollection: $parent.catalogCollection,
+                            onOpenDetails: $parent.partSelected.bind($parent),
+                            searchRequest: $parent.searchRequestFiltered">
+                            </part-preview>
+                        </div>
+                    </div>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item">
+
+                            <oj-button data-bind="visible: isSearchContinueAvailable && searchResultItems().length > 1"
+                                       disabled="[[searchContinueLoading]]"
+                                       on-click="[[continueSearch.bind($data)]]">More...
+                            </oj-button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- /ko -->
+            <!-- /ko -->
+
+            <!-- ko if: selectedInventory -->
+
+            <div class="oj-flex margin-top-16x">
+                <div class="oj-flex-item">
+                    <div>
+                        <span class="oj-text-md oj-text-primary-color"
+                              data-bind="text: selectedInventory().inventory.get('part_item_number_rev')"></span>
+                    </div>
+                    <div class="oj-text-sm oj-text-secondary-color">
+                        <span data-bind="text: selectedInventory().inventory.get('part_item_desc')"></span>
+                    </div>
+                    <div class="oj-text-xs oj-text-tertiary-color" data-bind="if: selectedInventory().dispositionText">
+                        <span data-bind="text: selectedInventory().dispositionText"></span>
+                    </div>
+                </div>
+                <div class="oj-flex-item oj-sm-flex-initial">
+                    <span class="oj-text-md oj-text-tertiary-color"
+                          data-bind="text: selectedInventory().measuredQuantity"></span>
+                </div>
+            </div>
+            <div class="oj-form oj-sm-odd-cols-12 oj-md-odd-cols-4 oj-md-labels-inline oj-margin-lg-top"
+                 style="padding-top: 20px;">
+
+                <oj-combobox-one class="input-wide margin-top-16x"
+                                 data="[[activityEnumArray]]"
+                                 id="activity"
+                                 label-hint="Billing Type"
+                                 messages-custom="[[selectMessagesCustomBillingType]]"
+                                 required="true"
+                                 value="{{activityId}}">
+                    <oj-bind-for-each data="[[activityEnumArray]]">
+                        <template>
+                            <oj-option value="[[$current.data.value]]">
+                                <oj-bind-text value="[[$current.data.label]]"></oj-bind-text>
+                            </oj-option>
+                        </template>
+                    </oj-bind-for-each>
+                </oj-combobox-one>
+
+                <oj-input-text class="input-wide"
+                               help.instruction="Serialized items will always have quantity as 1."
+                               id="serialNum"
+                               label-hint="Serial Number"
+                               value="{{serialNum}}">
+                </oj-input-text>
+
+                <oj-input-number class="input-wide margin-top-16x"
+                                 disabled="{{isSerialized}}"
+                                 id="quantity"
+                                 label-hint="Quantity"
+                                 min="1"
+                                 required="true"
+                                 step="1"
+                                 value="{{quantity}}">
+                </oj-input-number>
+
+            </div>
+
+
+            <!-- /ko -->
+        </oj-validation-group>
+        <div class="screen-actions oj-margin-vertical">
+            <oj-button chroming="outlined"
+                       class="charges-screen-button padding-all-16x margin-bottom-16px margin-top-40px"
+                       on-click='[[dismiss.bind($data)]]'>Back
+            </oj-button>
+            <oj-button chroming="callToAction"
+                       class="charges-screen-button margin-left-16x padding-all-16x margin-bottom-16px margin-top-40px"
+                       data-bind="visible: selectedInventory"
+                       on-click="[[submit.bind($data)]]">Submit
+            </oj-button>
+        </div>
+
+    </div>
+</div>

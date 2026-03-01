@@ -1,0 +1,67 @@
+{
+  "name": "@fa/debriefing",
+  "author": "Oracle Corporation (https://oracle.com)",
+  "version": "2601.159.253350907-1772347034744-1772347816707-1772348005064",
+  "rootServiceWorkerVersion": "240801",
+  "description": "Debriefing Plugin for Fusion Field Service",
+  "ofscMetadata": {
+    "originalFilesChecksum": "57299659034013b219a1669cd913fb00962fcfb07a21b31a95a88c0cfb5caca5",
+    "originalCommitHash": ".DIRTY"
+  },
+  "license": "UPL",
+  "files": [
+    "LICENSE.txt",
+    "manifest.json",
+    "*.zip"
+  ],
+  "scripts": {
+    "test:unit:ci": "exit 0"
+  },
+  "dependencies": {
+    "@oracle/oraclejet": "18.1.0",
+    "@oracle/oraclejet-tooling": "~18.1.0"
+  },
+  "devDependencies": {
+    "@oracle/ojet-cli": "18.1.0",
+    "@oracle/oraclejet-audit": "18.1.0",
+    "@oracle/oraclejet-preact": "^19.0.0",
+    "@oracle/oraclejet-tooling": "18.1.0",
+    "chai": "^4.3.7",
+    "chai-as-promised": "7.1.1",
+    "cssmin": "0.4.3",
+    "grunt": "^1.5.3",
+    "grunt-bumpup": "^0.6.3",
+    "grunt-contrib-clean": "^2.0.1",
+    "grunt-contrib-compress": "2.0.0",
+    "grunt-contrib-copy": "1.0.0",
+    "grunt-contrib-uglify": "^5.2.2",
+    "grunt-processhtml": "^0.4.3",
+    "i": "0.3.7",
+    "karma": "6.4.1",
+    "karma-chai": "0.1.0",
+    "karma-chai-plugins": "0.9.0",
+    "karma-chai-sinon": "0.1.5",
+    "karma-coverage": "2.2.0",
+    "karma-chrome-launcher": "3.2.0",
+    "karma-junit-reporter": "2.0.1",
+    "karma-mocha": "2.0.1",
+    "karma-requirejs": "1.1.0",
+    "karma-sinon": "1.0.5",
+    "karma-spec-reporter": "0.0.36",
+    "load-grunt-config": "4.0.1",
+    "mocha": "^10.2.0",
+    "mocha-junit-reporter": "2.2.0",
+    "mocha-multi-reporters": "1.5.1",
+    "nyc": "15.1.0",
+    "pdf-parse": "^1.1.1",
+    "puppeteer": "^19.11.1",
+    "sinon": "15.0.4",
+    "sinon-chai": "3.7.0",
+    "xmlbuilder": "15.1.1"
+  },
+  "overrides": {
+    "@oracle/oraclejet-tooling": {
+      "uglify-es": "3.3.9"
+    }
+  }
+}
