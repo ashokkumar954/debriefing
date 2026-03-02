@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!--
+    all-asset-details.html
+    Standalone page version of the asset details view.
+    Used only if direct navigation is needed; inline rendering via asset.html is preferred.
+-->
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Asset Details — Battery PM</title>
+    <link rel="stylesheet" href="asset-details.css"/>
+</head>
+<body class="cc-plugin">
+
+    <!-- Header -->
+    <div class="cc-header">
+        <button class="cc-back-btn" onclick="history.back()">&#8592;</button>
+        <span class="cc-h-title">Battery PM</span>
+        <span class="cc-h-badge" id="cc-badge">0</span>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="cc-toolbar">
+        <span class="cc-tb-title">Asset Details</span>
+        <span class="cc-tb-spacer"></span>
+        <button class="cc-icon-btn" title="Refresh" onclick="rerender()">&#8635;</button>
+    </div>
+
+    <!-- Table container -->
+    <div class="cc-cards-wrap">
+        <div id="all-assets-inline-container">
+            <div class="cc-no-data">Loading&hellip;</div>
+        </div>
+    </div>
+
+    <script src="asset-detail.js"></script>
+    <script src="all-asset-details.js"></script>
+    <script>
+        (function () {
+            var enumValues = window.__problemCodeEnum || {};
+            var keys = Object.keys(enumValues);
+
+            var badge = document.getElementById('cc-badge');
+            if (badge) badge.textContent = keys.length + ' asset(s)';
+
+            AllAssetDetails.render('all-assets-inline-container', enumValues);
+
+            window.rerender = function () {
+                AllAssetDetails.render('all-assets-inline-container', enumValues);
+            };
+        })();
+    </script>
+</body>
+</html>

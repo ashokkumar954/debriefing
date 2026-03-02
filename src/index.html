@@ -27,6 +27,7 @@ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.or
     <!-- App CSS -->
     <!-- build:css app.css -->
     <link rel="stylesheet" href="css/app.css" type="text/css"/>
+
     <!-- /build -->
 
     <!-- Oracle icon fonts -->
@@ -39,25 +40,7 @@ Licensed under the Universal Permissive License v 1.0 as shown at https://oss.or
         <h1 class="visually-hidden"></h1>
     </main>
 
-    <oj-dialog id="alertDialog" class="outbound-dialog min-height-body" cancel-behavior="none" drag-affordance="none" aria-describedby="dialogBodyContent">
-        <div class="oj-sm-flex-wrap-nowrap oj-flex" slot="header">
-            <div class="oj-flex oj-sm-align-items-flex-start oj-sm-flex-wrap-nowrap oj-sm-justify-content-space-around oj-flex-item oj-sm-flex-initial">
-                <oj-bind-text class="oj-flex-item oj-sm-flex-initial outbound-dialog-header">
-                    <oj-bind-text value="[[ dialogHeading ]]"></oj-bind-text>
-                </oj-bind-text>
-            </div>
-        </div>
-        <div slot="body">
-            <oj-bind-text value="[[ dialogMessage ]]"></oj-bind-text>
-        </div>
-        <div slot="footer">
-            <div class="outbound-form-footer">
-                <div>
-                    <oj-button id="okButton" on-oj-action="[[closeDialog.bind($data)]]">OK</oj-button>
-                </div>
-            </div>
-        </div>
-    </oj-dialog> </div>
+     </div>
 
 
 <!-- html2pdf first (dev path -> build flattens to hosted root) -->

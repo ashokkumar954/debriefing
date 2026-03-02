@@ -1,0 +1,373 @@
+/*
+** Asset Detail CSS
+** Replicates the Battery PM card UI from the image
+*/
+
+.asset-detail-card {
+    border: 3px solid #222;
+    border-radius: 0;
+    margin-bottom: 1.5rem;
+    background: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    overflow: hidden;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Hazard stripe top bar */
+.asset-detail-card::before {
+    content: '';
+    display: block;
+    height: 10px;
+    background: repeating-linear-gradient(
+        -45deg,
+        #f5c400,
+        #f5c400 8px,
+        #111 8px,
+        #111 16px
+    );
+}
+
+/* Problem code header label (left side tag) */
+.asset-card-label {
+    background: #c00;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 0 4px 4px 0;
+    display: inline-block;
+    margin: 6px 0 0 0;
+    max-width: 110px;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+/* Main card body grid */
+.asset-card-body {
+    display: grid;
+    grid-template-columns: 220px 1fr 160px 180px;
+    gap: 0;
+    border-top: 1px solid #ccc;
+}
+
+/* ── LEFT: Asset info ── */
+.asset-info {
+    padding: 8px 10px;
+    border-right: 1px solid #ccc;
+}
+
+.asset-id-label {
+    font-size: 11px;
+    color: #333;
+    font-weight: 600;
+}
+
+.asset-id-value {
+    color: #006600;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.asset-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 8px;
+    font-size: 11px;
+    color: #333;
+}
+
+.asset-info-grid .label {
+    color: #555;
+    font-size: 10px;
+}
+
+.asset-info-grid .value {
+    font-weight: 600;
+    color: #111;
+}
+
+.last-completed-header {
+    font-weight: 700;
+    font-size: 11px;
+    text-align: center;
+    margin: 6px 0 4px 0;
+    border-top: 1px solid #ccc;
+    padding-top: 4px;
+}
+
+.last-completed-dates {
+    display: flex;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.checklist-row {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.checklist-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 9px;
+    color: #333;
+    gap: 2px;
+}
+
+.checklist-checkbox {
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid #555;
+    background: #fff;
+    display: inline-block;
+}
+
+/* ── CENTER: Last Reading ── */
+.last-reading {
+    padding: 8px 10px;
+    border-right: 1px solid #ccc;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.last-complete-box {
+    border: 1px solid #aaa;
+    padding: 4px 8px;
+    font-size: 10px;
+    margin-bottom: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+.last-complete-box .date {
+    font-weight: 700;
+    font-size: 11px;
+}
+
+.reading-header {
+    font-weight: 700;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.reading-grid {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.reading-col {
+    text-align: center;
+}
+
+.reading-col .reading-label {
+    font-size: 9px;
+    color: #555;
+}
+
+.reading-col .reading-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111;
+}
+
+/* Red selectable checklist checkboxes */
+.cc-chk-input {
+    width: 14px; height: 14px;
+    appearance: none; -webkit-appearance: none;
+    border: 1.5px solid #C62828; border-radius: 2px;
+    background: #fff; cursor: default;
+    vertical-align: middle; flex-shrink: 0;
+}
+.cc-chk-input:checked {
+    background: #C62828;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath stroke='white' stroke-width='1.5' fill='none' d='M1.5 5l2.5 3 4.5-5'/%3E%3C/svg%3E");
+    background-size: 10px; background-position: center; background-repeat: no-repeat;
+}
+.cc-chk-input:not([disabled]) { cursor: pointer; }
+.cc-chk-input[disabled]       { opacity: 0.7; }
+
+/* ── RIGHT: Component checklist ── */
+.component-checks {
+    border-right: 1px solid #ccc;
+    padding: 0;
+}
+
+.component-check-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 8px;
+    border-bottom: 1px solid #eee;
+    font-size: 11px;
+}
+
+.component-check-row:last-child {
+    border-bottom: none;
+}
+
+.component-name {
+    flex: 1;
+    color: #111;
+}
+
+.component-bar {
+    width: 28px;
+    height: 14px;
+    background: #c00;
+    margin-left: 6px;
+    flex-shrink: 0;
+}
+
+/* ── FAR RIGHT: Problem Note ── */
+.problem-note {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.problem-note-header {
+    font-weight: 700;
+    font-size: 12px;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.problem-note-box {
+    flex: 1;
+    border: 1px solid #aaa;
+    min-height: 60px;
+    margin-bottom: 8px;
+    padding: 4px;
+    font-size: 11px;
+    resize: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.needs-repair-row,
+.complete-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.needs-repair-row input[type="checkbox"],
+.complete-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* ── All Assets Page ── */
+.all-assets-container {
+    padding: 16px;
+    background: #f0f0f0;
+    min-height: 100vh;
+}
+
+.all-assets-header {
+    background: #1a3a5c;
+    color: #fff;
+    padding: 10px 16px;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 2px;
+}
+
+.all-assets-header .subtitle {
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+.battery-pm-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.battery-pm-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+}
+
+.battery-pm-toggle {
+    font-size: 18px;
+    cursor: pointer;
+    color: #555;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.btn-action {
+    background: #4caf50;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    font-size: 14px;
+}
+
+.btn-action:hover {
+    background: #388e3c;
+}
+
+/* Hazard stripe bottom bar */
+.asset-detail-card::after {
+    content: '';
+    display: block;
+    height: 10px;
+    background: repeating-linear-gradient(
+        -45deg,
+        #f5c400,
+        #f5c400 8px,
+        #111 8px,
+        #111 16px
+    );
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .asset-card-body {
+        grid-template-columns: 1fr;
+    }
+    .asset-info,
+    .last-reading,
+    .component-checks,
+    .problem-note {
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+    }
+}
