@@ -1,0 +1,31 @@
+requirejs([
+    '/base/test/unit/app-controller',
+    '/base/test/unit/ofsc-connector',
+    '/base/test/unit/models/part-model',
+    '/base/test/unit/viewModels/add-expense',
+    '/base/test/unit/viewModels/add-labor',
+    '/base/test/unit/viewModels/invoice',
+    '/base/test/unit/viewModels/add-returned-part',
+    '/base/test/unit/viewModels/add-used-part',
+    '/base/test/unit/viewModels/dashboard',
+    '/base/test/unit/services/inventory-search-service',
+    '/base/test/unit/services/ofsc-plugin-api-transport',
+    '/base/test/unit/services/fusion-rest-api-transport',
+    '/base/test/unit/services/ofsc-rest-api-transport',
+    '/base/test/unit/models/catalog-model',
+    '/base/test/unit/models/catalog-collection',
+    '/base/test/unit/models/abstract-model',
+    '/base/test/unit/models/abstract-collection',
+    '/base/test/unit/data-services/parts-catalog-data-service',
+    '/base/test/unit/data-services/service-logistics-data-service',
+    '/base/test/unit/data-helper/service-debrief-helper',
+    '/base/test/unit/data-services/activity-data-service',
+    '/base/test/unit/components/part-preview-component/part-preview-component',
+    '/base/test/unit/utils/ko-text-highlighted-binding',
+    '/base/test/unit/utils/signature',
+    '/base/test/unit/utils/invoice-utils',
+    '/base/test/unit/utils/parser'
+
+], () => {
+    window.__karma__.start();
+});

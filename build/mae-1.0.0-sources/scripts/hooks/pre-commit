@@ -1,0 +1,13 @@
+#!/bin/sh
+LC_ALL=C
+
+local_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+branch_regex='^(fix|f)-\S+-OFSC-[0-9]{5,6}'
+error_msg="Branch name should match template '(fix|f)-short_description-OFSC-12345'"
+
+if [[ ! $local_branch =~ $branch_regex ]]
+then
+    echo "$error_msg"
+    exit 1
+fi

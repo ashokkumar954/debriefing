@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!--
+    all-asset-details.html
+    Displays one Battery PM asset card per problem_code value received from OFSC.
+    Integrates with the existing plugin via postMessage.
+-->
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>All Asset Details</title>
+    <link rel="stylesheet" href="../../asset-detail.css" type="text/css"/>
+    <style>
+        /* Page-level styles */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #e8e8e8;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Top navigation bar matching screenshot */
+        .page-topbar {
+            background: #1565c0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .page-topbar .back-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .page-topbar .title {
+            flex: 1;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .page-topbar .fwd-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        /* Section header: "Battery PM ˄" + save/refresh icons */
+        .section-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px 6px 16px;
+            gap: 8px;
+            background: #f0f0f0;
+            border-bottom: 1px solid #ccc;
+            position: sticky;
+            top: 48px;
+            z-index: 90;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .section-toggle {
+            font-size: 16px;
+            cursor: pointer;
+            color: #555;
+            user-select: none;
+        }
+
+        .section-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #4caf50;
+            background: #fff;
+            color: #4caf50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .icon-btn:hover {
+            background: #4caf50;
+            color: #fff;
+        }
+
+        /* Cards container */
+        .cards-container {
+            padding: 12px 16px;
+        }
+
+        /* Loading state */
+        .loading-msg {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 15px;
+        }
+
+        /* No data state */
+        .no-data-msg {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px;
+            color: #856404;
+            font-size: 14px;
+        }
+
+        /* Problem code count badge */
+        .count-badge {
+            background: #1565c0;
+            color: #fff;
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top navigation bar -->
+    <div class="page-topbar">
+        <button class="back-btn" onclick="history.back()">&#8592;</button>
+        <div class="title" id="page-title">Service Call</div>
+        <button class="fwd-btn">&#8594;</button>
+    </div>
+
+    <!-- Section header -->
+    <div class="section-header">
+        <span class="section-title">All Assets</span>
+        <span class="section-toggle" id="section-toggle" onclick="toggleSection()">&#8743;</span>
+        <span class="count-badge" id="count-badge">0</span>
+        <div class="section-actions">
+            <button class="icon-btn" title="Refresh" onclick="refreshCards()">&#8635;</button>
+            <button class="icon-btn" title="Save" onclick="saveAll()">&#128190;</button>
+        </div>
+    </div>
+
+    <!-- Cards will be injected here -->
+    <div class="cards-container" id="cards-container">
+        <div class="loading-msg" id="loading-msg">
+            Loading asset details...
+        </div>
+    </div>
+
+    <script src="asset-detail.js"></script>
+    <script src="all-asset-details.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+define([],(()=>{const t=window.localStorage;return class{static saveData(e,a){t.setItem(e,JSON.stringify(a))}static loadData(e){const a=t.getItem(e);return a?JSON.parse(a):{}}static removeData(e){t.removeItem(e)}}}));

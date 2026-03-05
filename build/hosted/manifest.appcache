@@ -1,0 +1,17 @@
+CACHE MANIFEST
+app.css
+local-fonts.css
+asset-details.css
+app_sprite.svg
+html2pdf.bundle.js
+index.html
+logo.svg
+bundle.js
+asset-detail.js
+all-asset-details.js
+
+NETWORK:
+*
+
+# version 1.0.0
+# repo-files-checksum 347a2223e5d22a9afb47d8eb69f503df081d9d9fbf23eeade0da19cd3f0e9749

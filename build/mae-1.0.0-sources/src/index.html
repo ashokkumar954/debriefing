@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!-- Oracle Field Service Debriefing plugin
+Copyright (c) 2023, Oracle and/or its affiliates.
+Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/ -->
+<!-- build:[manifest] manifest.appcache -->
+<html lang="en-us">
+<!-- /build -->
+<head>
+    <title>Plugin Debriefing</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1">
+    <link rel="icon" href="css/images/favicon.ico" type="image/x-icon"/>
+
+    <!-- build:template
+    <meta name="version" content="<%= getVersion() %>">
+    <meta name="repo-version" content="<%= commitHash %>">
+    <meta name="repo-files-checksum" content="<%= filesChecksum %>">
+    <meta name="original-repo-version" content="<%= originalCommitHash %>">
+    <meta name="original-repo-files-checksum" content="<%= originalFilesChecksum %>">
+    /build -->
+
+    <!-- JET Redwood CSS (18.1.0) -->
+    <!-- build:css https://static.oracle.com/cdn/jet/18.1.0/default/css/redwood/oj-redwood-min.css -->
+    <!-- injector:theme --><!-- endinjector -->
+    <!-- /build -->
+
+    <!-- App CSS -->
+    <!-- build:css app.css -->
+    <link rel="stylesheet" href="css/app.css" type="text/css"/>
+
+    <!-- /build -->
+
+    <!-- Oracle icon fonts -->
+    <link rel="stylesheet" id="uxiconFont" href="https://static.oracle.com/cdn/fnd/gallery/2210.1.0/images/iconfont/ojuxIconFont.min.css"/>
+    <link rel="stylesheet" href="https://static.oracle.com/cdn/fnd/gallery/2210.1.0/OracleFont/OracleFont.min.css" type="text/css"/>
+</head>
+<body class="oj-web-applayout-body" style="background-color: #fafafa;">
+<div id="globalBody">
+    <main role="main" data-bind="ojModule: router.moduleConfig">
+        <h1 class="visually-hidden"></h1>
+    </main>
+
+     </div>
+
+
+<!-- html2pdf first (dev path -> build flattens to hosted root) -->
+<!-- build:js html2pdf.bundle.js -->
+<script src="js/vendor/html2pdf/html2pdf.bundle.js"></script>
+<!-- /build -->
+<!-- build:js https://static.oracle.com/cdn/jet/18.1.0/3rdparty/require/require.js -->
+<!-- injector:scripts --><!-- endinjector -->
+<!-- /build -->
+<!-- build:js https://static.oracle.com/cdn/jet/18.1.0/default/js/bundles-config.js -->
+<!-- /build -->
+<!-- App bundle (dev js/bundle.js -> hosted bundle.js at root) -->
+<!-- build:js bundle.js -->
+<script src="js/bundle.js"></script>
+<!-- /build -->
+</body>
+</html>

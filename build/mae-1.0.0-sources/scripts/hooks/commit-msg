@@ -1,0 +1,9 @@
+#!/bin/sh
+
+commit_regex='^(\[(Story|Feature|Fix|Cleanup)\] OFSC-[0-9]{5,6}: |Merge)\S+'
+error_msg="Aborting commit. Your commit message should match template '[Story|Feature|Fix|Cleanup] OFSC-12345: your commit text'"
+
+if ! grep -qE "$commit_regex" "$1"; then
+  echo "$error_msg" >&2
+  exit 1
+fi
