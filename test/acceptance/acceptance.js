@@ -23,7 +23,7 @@ suite('Acceptance', () => {
         await helper.openNewActivity(page, openActivity);
     });
 
-    test('Debrief Landing page is getting displayed without any data and having options to add labor, expense , add parts and return parts', (async function () {
+    test('BHM Landing page is getting displayed without any data and having options to add labor, expense , add parts and return parts', (async function () {
         this.timeout(60000);
 
         let frameHandle = null;
@@ -70,7 +70,7 @@ suite('Acceptance', () => {
         await page.screenshot({path: 'WithEmptyDashboard.png', fullPage: true});
     }));
 
-    test('Validate the debrief page by adding labor', (async function () {
+    test('Validate the page by adding labor', (async function () {
         this.timeout(70000);
 
         let frameHandle = null;
@@ -151,7 +151,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Validate deleting the added labor items in Debrief plugin', (async function () {
+    test('Validate deleting the added labor items', (async function () {
         this.timeout(80000);
 
         let frameHandle = null;
@@ -250,7 +250,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Validate adding expense in Debrief plugin', (async function () {
+    test('Validate adding expense', (async function () {
         this.timeout(60000);
 
         let frameHandle = null;
@@ -349,7 +349,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Validate deleting the added expense in Debrief plugin', (async function () {
+    test('Validate deleting the added expense', (async function () {
         this.timeout(40000);
 
         let frameHandle = null;
@@ -424,7 +424,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Debrief Redwood - Verify search functionality and results details for Return parts', (async function () {
+    test('BHM Redwood - Verify search functionality and results details for Return parts', (async function () {
         this.timeout(90000);
 
         let frameHandle = null;
@@ -531,7 +531,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Debrief Plugin - To validate add parts with Inventory having 2 different serial numbers', (async function () {
+    test('To validate add parts with Inventory having 2 different serial numbers', (async function () {
         this.timeout(120000);
 
         let frameHandle = null;
@@ -668,7 +668,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Debrief Plugin - To validate add parts by adding same inventory with same serial number multiple times', (async function () {
+    test('To validate add parts by adding same inventory with same serial number multiple times', (async function () {
         this.timeout(120000);
 
         let frameHandle = null;
@@ -757,7 +757,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Debrief Plugin - To validate return parts for a serialised inventory in OFS', (async function () {
+    test('To validate return parts for a serialised inventory in OFS', (async function () {
         this.timeout(120000);
 
         let frameHandle = null;
@@ -915,7 +915,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Debrief Plugin - To validate add parts and return parts with serial number', (async function () {
+    test('To validate add parts and return parts with serial number', (async function () {
         this.timeout(140000);
 
         let frameHandle = null;
@@ -1117,7 +1117,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Validate adding  multiple expense with decimals in Debrief plugin', (async function () {
+    test('Validate adding multiple expense with decimals', (async function () {
         this.timeout(120000);
 
         let frameHandle = null;
@@ -1325,7 +1325,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Validate the debrief page by adding labor with decimal', (async function () {
+    test('Validate the page by adding labor with decimal', (async function () {
         this.timeout(70000);
 
         let frameHandle = null;

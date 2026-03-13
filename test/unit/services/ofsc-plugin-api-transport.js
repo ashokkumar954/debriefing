@@ -6,7 +6,6 @@ define(['knockout',
         'storage/persistent-storage',
         'data-services/parts-catalog-data-service',
         'constants',
-        'data-helper/data-debrief-helper',
         'data-services/activity-data-service'],
     (ko,
      OfscPluginApiTransport,
@@ -16,7 +15,6 @@ define(['knockout',
      PersistentStorage,
      PartsCatalogDataService,
      Constants,
-     DataDebriefHelper,
      ActivityDataService) => {
 
         suite('OfscPluginApiTransport', () => {

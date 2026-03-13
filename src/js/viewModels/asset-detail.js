@@ -20,6 +20,14 @@ var AssetDetail = (function () {
     var COMP_BAT = ['Cables','Connectors','Contact Tips','Shrouds','Vent Caps','Watering System','Battery Tray','Physical damage'];
     var COMP_OTH = ['Cables','Connectors','Contact Tips','Shrouds','Watering System','Battery Tray','Physical damage'];
 
+    /* ── Component condition options ── */
+    var COMP_OPT_HTML =
+        '<option value="1">1 - Good Condition</option>' +
+        '<option value="2">2 - Address Customer Request</option>' +
+        '<option value="3">3 - Safety Related Issue</option>' +
+        '<option value="4">4 - Does not meet design Specification</option>' +
+        '<option value="5">5 - Missing</option>';
+
     /* ── Sample data pools (index by hash of codeIndex+codeLabel) ── */
     var _D = {
         ids:   [29148, 30021, 11553, 44821, 76320, 55019, 38741],
@@ -105,9 +113,9 @@ var AssetDetail = (function () {
 
         /* Components */
         if (rec.components) {
-            det.querySelectorAll('.cc-comp-chk').forEach(function (cb) {
-                var lbl = cb.previousElementSibling ? cb.previousElementSibling.textContent.trim() : '';
-                if (lbl && rec.components[lbl] !== undefined) cb.checked = rec.components[lbl];
+            det.querySelectorAll('.cc-comp-sel').forEach(function (sel) {
+                var lbl = sel.previousElementSibling ? sel.previousElementSibling.textContent.trim() : '';
+                if (lbl && rec.components[lbl] !== undefined) sel.value = rec.components[lbl];
             });
         }
 
@@ -175,11 +183,46 @@ var AssetDetail = (function () {
 
     /* ═══════════════════════════════════════════════════════════════════════
        createRows() — public entry point
+       Signatures:
+         createRows(asset, rowIndex)            — IB Asset object from Fusion API
+         createRows(codeIndex, codeLabel, rowIndex) — legacy problem_code enum
        Returns DocumentFragment with [summary <tr>] + [detail <tr>]
     ═══════════════════════════════════════════════════════════════════════ */
-    function createRows(codeIndex, codeLabel, rowIndex) {
-        var d    = _buildData(codeIndex, codeLabel);
-        var ri   = rowIndex;
+    function createRows(codeIndexOrAsset, codeLabelOrRowIndex, rowIndex) {
+        var d, codeIndex, codeLabel, ri;
+
+        if (typeof codeIndexOrAsset === 'object' && codeIndexOrAsset !== null) {
+            // ── IB Asset mode ──
+            var asset = codeIndexOrAsset;
+            ri        = codeLabelOrRowIndex;
+            codeIndex = String(asset.instanceNumber || asset.assetId || ri);
+            codeLabel = (asset.desc || '') + ' (' + (asset.assetId || '') + ')';
+            d = {
+                isBat:    asset.isBat,
+                isFlood:  asset.isFlood,
+                assetId:  asset.assetId  || '',
+                serial:   asset.serial   || '',
+                mfr:      asset.mfr      || '',
+                model:    asset.model    || '',
+                desc:     asset.desc     || '',
+                mfgDate:  asset.mfgDate  || '',
+                age:      '',
+                barcode:  asset.barcode  || '',
+                dates:    ['—', '—', '—', '—'],
+                lcDate:   '—',
+                totalHrs: null,
+                lowVdc:   asset.isFlood ? '2.222' : '7.7',
+                highVdc:  asset.isFlood ? '2.23'  : '6',
+                lowSg:    asset.isBat   ? null     : (asset.isFlood ? '1.111' : '1.280')
+            };
+        } else {
+            // ── Legacy problem_code enum mode ──
+            codeIndex = codeIndexOrAsset;
+            codeLabel = codeLabelOrRowIndex;
+            ri        = rowIndex;
+            d         = _buildData(codeIndex, codeLabel);
+        }
+
         var frag = document.createDocumentFragment();
 
         /* ── Summary row ── */
@@ -203,7 +246,6 @@ var AssetDetail = (function () {
                 '<span class="cc-code-pill" title="' + _e(codeIndex) + '">' + _e(codeLabel) + '</span>' +
                 '<span id="cc-status-' + ri + '" style="display:none;"></span>' +
             '</td>' +
-            '<td class="cc-summary-td cc-num">' + d.assetId + '</td>' +
             '<td class="cc-summary-td">' + d.serial + '</td>' +
             '<td class="cc-summary-td">' + d.mfr + '</td>' +
             '<td class="cc-summary-td">' + d.model + '</td>';
@@ -214,7 +256,7 @@ var AssetDetail = (function () {
         detRow.id        = 'cc-det-' + ri;
         detRow.className = 'cc-detail-row';
         var td = document.createElement('td');
-        td.colSpan   = 7;
+        td.colSpan   = 6;
         td.className = 'cc-detail-panel';
         td.innerHTML = _buildPanel(d, codeLabel, codeIndex, ri);
         detRow.appendChild(td);
@@ -233,11 +275,13 @@ var AssetDetail = (function () {
         var isBat = d.isBat;
         var comps = isBat ? COMP_BAT : COMP_OTH;
 
-        /* ── Last Completed chips ── */
-        var lcHTML = d.dates.map(function(dt) {
+        /* ── Last Completed chips — skip placeholder '—' dates ── */
+        var realDates = d.dates.filter(function(dt) { return dt && dt !== '—'; });
+        var lcHTML = realDates.map(function(dt) {
             return '<span class="cc-lc-chip">' + dt + '</span>';
         }).join('');
-        if (isBat) lcHTML += '<span class="cc-lc-chip na">N/A</span>';
+        if (isBat && realDates.length > 0) lcHTML += '<span class="cc-lc-chip na">N/A</span>';
+        if (!lcHTML) lcHTML = '<span class="cc-lc-chip na">No history</span>';
 
         /* ── Checklist (with oninput to auto-populate note) ── */
         var chkItems = ['Visual Inspection', 'Added Water', 'BDR Download', 'Wash'];
@@ -277,8 +321,10 @@ var AssetDetail = (function () {
         var compHTML = comps.map(function(c, k) {
             return '<div class="cc-comp-row">' +
                 '<span>' + c + '</span>' +
-                '<input type="checkbox" class="cc-chk-input cc-comp-chk" id="cc-comp-' + ri + '-' + k + '" ' +
-                    'oninput="AssetDetail.updateNote(' + ri + ')"/>' +
+                '<select class="cc-comp-sel" id="cc-comp-' + ri + '-' + k + '" ' +
+                    'oninput="AssetDetail.updateNote(' + ri + ')">' +
+                    COMP_OPT_HTML +
+                '</select>' +
             '</div>';
         }).join('');
 
@@ -322,7 +368,7 @@ var AssetDetail = (function () {
                 '<div class="cc-sec-reading">' +
                     '<div class="cc-lc-box">' +
                         '<div class="cc-lc-box-lbl">Last<br>Complete</div>' +
-                        '<div class="cc-lc-box-date">' + d.lcDate + '</div>' +
+                        '<div class="cc-lc-box-date">' + (d.lcDate && d.lcDate !== '—' ? d.lcDate : 'N/A') + '</div>' +
                         '<div class="cc-lc-box-pm">PM</div>' +
                     '</div>' +
                     '<div class="cc-rd-title">Last Reading</div>' +
@@ -356,6 +402,27 @@ var AssetDetail = (function () {
         );
     }
 
+    /* ── Compact select: show only number in collapsed state, full text when open ── */
+    function _initCompactSelects(ri) {
+        var det = document.getElementById('cc-det-' + ri);
+        if (!det) return;
+        det.querySelectorAll('.cc-comp-sel').forEach(function(sel) {
+            if (sel.dataset.compactInit) return; // already initialised
+            sel.dataset.compactInit = '1';
+            var fullTexts = Array.from(sel.options).map(function(o) { return o.text; });
+            function compact() {
+                Array.from(sel.options).forEach(function(o) { o.text = o.value; });
+            }
+            function expand() {
+                Array.from(sel.options).forEach(function(o, i) { o.text = fullTexts[i]; });
+            }
+            sel.addEventListener('mousedown', expand);
+            sel.addEventListener('change', function() { setTimeout(compact, 0); });
+            sel.addEventListener('blur', compact);
+            compact();
+        });
+    }
+
     /* ═══════════════════════════════════════════════════════════════════════
        toggle() — expand / collapse; restores saved data on open
     ═══════════════════════════════════════════════════════════════════════ */
@@ -367,7 +434,10 @@ var AssetDetail = (function () {
         var open = det.classList.toggle('cc-open');
         if (sum) sum.classList.toggle('cc-row-open', open);
         if (btn) btn.innerHTML = open ? '&#8964;' : '&#8250;';
-        if (open) _restoreRecord(ri);
+        if (open) {
+            _restoreRecord(ri);
+            _initCompactSelects(ri);
+        }
     }
 
     /* ═══════════════════════════════════════════════════════════════════════
@@ -389,9 +459,9 @@ var AssetDetail = (function () {
 
         var components = {};
         if (det) {
-            det.querySelectorAll('.cc-comp-chk').forEach(function(cb) {
-                var lbl = cb.previousElementSibling ? cb.previousElementSibling.textContent.trim() : cb.id;
-                components[lbl] = cb.checked;
+            det.querySelectorAll('.cc-comp-sel').forEach(function(sel) {
+                var lbl = sel.previousElementSibling ? sel.previousElementSibling.textContent.trim() : sel.id;
+                components[lbl] = sel.value;
             });
         }
 
@@ -436,10 +506,12 @@ var AssetDetail = (function () {
         if (chkl.length) lines.push('Checklist: ' + chkl.join(', '));
 
         var comps = [];
-        det.querySelectorAll('.cc-comp-chk').forEach(function(cb) {
-            if (cb.checked) {
-                var s = cb.previousElementSibling;
-                if (s) comps.push(s.textContent.trim());
+        det.querySelectorAll('.cc-comp-sel').forEach(function(sel) {
+            if (sel.value && sel.value !== '1') {
+                var s = sel.previousElementSibling;
+                var name = s ? s.textContent.trim() : sel.id;
+                var optText = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : sel.value;
+                comps.push(name + ': ' + optText);
             }
         });
         if (comps.length) lines.push('Components: ' + comps.join(', '));

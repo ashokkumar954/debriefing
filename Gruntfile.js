@@ -95,7 +95,11 @@ module.exports = function (grunt) {
 
         bumpup: {options: {updateProps: {pkg: 'package.json'}}, files: ['package.json']},
 
-        clean: [outputDir],
+        clean: {
+            all: [outputDir],
+            // Cleans everything in the output dir EXCEPT the hosted folder (preserves previous hosted builds)
+            build: { src: [outputDir + '/*', '!' + outputDir + '/' + ARCHIVE_FOLDER] }
+        },
 
         processhtml: {
             dist: {
@@ -184,6 +188,14 @@ module.exports = function (grunt) {
             },
 
 // build artifacts to hosted
+            asset_detail: {
+                src: 'web/js/viewModels/asset-detail.js',
+                dest: outputDir + '/' + ARCHIVE_FOLDER + '/asset-detail.js'
+            },
+            all_asset_details: {
+                src: 'web/js/viewModels/all-asset-details.js',
+                dest: outputDir + '/' + ARCHIVE_FOLDER + '/all-asset-details.js'
+            },
             bundle: {
                 files: [
                     {src: ['web/index.html'], dest: outputDir + '/' + ARCHIVE_FOLDER + '/index.html'},
@@ -358,6 +370,8 @@ module.exports = function (grunt) {
         'copy:html',
         'copy:js',
         'copy:bundle',
+        'copy:asset_detail',
+        'copy:all_asset_details',
         'copy:manifest',
         'copy:css_app',
         'copy:css_local_fonts',
@@ -368,7 +382,6 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('distributeHosted', () => {
-        grunt.task.run('clean');
         grunt.task.run('copyBuiltResources');
         grunt.task.run('processhtml');
         grunt.task.run('addCopyright:main');
@@ -484,7 +497,7 @@ module.exports = function (grunt) {
         'distributePlugin'
     ]);
 
-    grunt.registerTask('rebuild', ['clean', 'build']);
+    grunt.registerTask('rebuild', ['clean:build', 'build']);
 
     grunt.registerTask('default', ['build']);
 

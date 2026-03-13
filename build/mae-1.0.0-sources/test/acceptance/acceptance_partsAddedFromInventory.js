@@ -25,7 +25,7 @@ suite('Acceptance', () => {
         await helper.openNewActivity(page, withAddAndReturnParts);
     });
 
-    test('Validate adding parts/Validate deleting the added parts in Debrief Plugin/Validate the debrief plugin by adding return parts/Validate deleting the added return parts in Debrief plugin', (async function () {
+    test('Validate adding parts/Validate deleting the added parts/Validate adding return parts/Validate deleting the added return parts', (async function () {
         this.timeout(80000);
 
         let frameHandle = null;
@@ -117,7 +117,7 @@ suite('Acceptance', () => {
 
     }));
 
-    test('Validate Dashboard after deleting the added parts in Debrief Plugin', (async function () {
+    test('Validate Dashboard after deleting the added parts', (async function () {
         this.timeout(60000);
         let frameHandle = null;
         let frame = null;

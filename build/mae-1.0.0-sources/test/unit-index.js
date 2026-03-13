@@ -17,8 +17,6 @@ requirejs([
     '/base/test/unit/models/abstract-model',
     '/base/test/unit/models/abstract-collection',
     '/base/test/unit/data-services/parts-catalog-data-service',
-    '/base/test/unit/data-services/service-logistics-data-service',
-    '/base/test/unit/data-helper/service-debrief-helper',
     '/base/test/unit/data-services/activity-data-service',
     '/base/test/unit/components/part-preview-component/part-preview-component',
     '/base/test/unit/utils/ko-text-highlighted-binding',

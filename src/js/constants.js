@@ -70,6 +70,24 @@ define([
             return 'callProcedure';
         };
 
+        // External key: FFS application calling REST APIs via OAuth from OFSC
+        // OFSC application name: "Concentric - Oracle Fusion Applications - User Asserted"
+        // Label in FFS plugin config: "Ext"
+        static get KEY_EXT() {
+            return 'Ext';
+        }
+
+        // Internal key: Internal Field Service APIs
+        // OFSC application name: "App CX Service"
+        static get KEY_INT() {
+            return 'ofsApiApplication';
+        }
+
+        // Oracle Fusion base URL for IB Assets and other Fusion REST API calls
+        static get FUSION_BASE_URL() {
+            return 'https://ibfaqy-dev1.fa.ocs.oraclecloud.com:443';
+        }
+
     }
 
     return Constants;

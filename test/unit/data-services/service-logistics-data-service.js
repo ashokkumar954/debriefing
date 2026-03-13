@@ -1,3 +1,6 @@
+// LEGACY: This file tests ServicelogisticsService and DebriefModel which are not part of the BHM (Bulk Health Metrics) plugin.
+// They were part of the old OOB debrief architecture and are retained for reference only.
+// These tests are NOT included in the unit test runner (test/unit-index.js).
 define(['data-services/service-logistics-data-service', 'services/fusion-rest-api-transport','models/debrief-model', 'storage/persistent-storage'],
     (ServicelogisticsService, FusionRestApiTransport, DebriefModel, PersistentStorage) => {
 

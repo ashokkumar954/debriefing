@@ -1,3 +1,6 @@
+// LEGACY: This file tests ServiceDebriefHelper which is not part of the MAE (Multi Asset Execution) plugin.
+// It was part of the old OOB debrief architecture and is retained for reference only.
+// These tests are NOT included in the unit test runner (test/unit-index.js).
 define(['data-helper/service-debrief-helper',
         'knockout',
         'data-services/service-logistics-data-service',

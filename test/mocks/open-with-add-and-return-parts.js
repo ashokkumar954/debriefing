@@ -20,14 +20,14 @@ module.exports = {
         "su_zid": 2,
         "uid": 23888,
         "ulanguage": 1,
-        "ulogin": "mobility_debrief_plugin",
-        "uname": "mobility_debrief_plugin",
+        "ulogin": "mae_plugin",
+        "uname": "mae_plugin",
         "week_start": 0,
         "languageCode": "en"
     },
     "resource": {
         "pid": 21074,
-        "pname": "mobility_debrief_plugin",
+        "pname": "mae_plugin",
         "currentTime": "2023-02-16 14:57:45",
         "deviceUTCDiffSeconds": 1,
         "timeZoneDiffSeconds": -18000

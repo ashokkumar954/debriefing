@@ -4,26 +4,15 @@
     <!-- ── LANDING VIEW ── -->
     <div data-bind="ifnot: showAllAssets">
         <div class="cc-landing">
-            <div class="cc-landing-title">Multi-Asset Execution (MAE)</div>
+            <div class="cc-landing-title">Bulk Health Metrics (BHM)</div>
             <div class="cc-landing-sub">Asset service management</div>
 
-            <div data-bind="ifnot: hasOptions">
-                <div class="cc-banner-warn">
-                    <strong>No problem_code values received from OFSC.</strong><br>
-                    Please ensure <em>problem_code</em> is added to plugin Properties
-                    with Read or Read/Write access.
-                </div>
+            <div class="cc-banner-ok">
+                <strong style="color:#3a7030;">&#10003; Assets loaded for this customer.</strong>
             </div>
-
-            <div data-bind="if: hasOptions">
-                <div class="cc-banner-ok">
-                    <strong style="color:#3a7030;">&#10003; Problem codes loaded &mdash; </strong>
-                    <span data-bind="text: problemCodeCount"></span> asset type(s) available.
-                </div>
-                <button class="cc-primary-btn" data-bind="click: navigateToAllAssets">
-                    View All Asset Details &rarr;
-                </button>
-            </div>
+            <button class="cc-primary-btn" data-bind="click: navigateToAllAssets">
+                View Assets Associated to this Customer &rarr;
+            </button>
         </div>
     </div>
 
@@ -32,7 +21,7 @@
 
         <div class="cc-header">
             <button class="cc-back-btn" data-bind="click: goBack">&#8592;</button>
-            <span class="cc-h-title">Multi-Asset Execution (MAE)</span>
+            <span class="cc-h-title">Bulk Health Metrics (BHM)</span>
             <span class="cc-h-badge" data-bind="text: problemCodeCount() + ' asset(s)'"></span>
         </div>
 
@@ -40,7 +29,7 @@
             <span class="cc-tb-title">Asset Details</span>
             <span class="cc-tb-spacer"></span>
             <button class="cc-icon-btn" title="Refresh"
-                    data-bind="click: function(){ if(typeof AllAssetDetails!=='undefined') AllAssetDetails.render('all-assets-inline-container', _enumValues); }">
+                    data-bind="click: navigateToAllAssets">
                 &#8635;
             </button>
         </div>

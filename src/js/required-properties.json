@@ -4,23 +4,23 @@
   "properties": [],
   "pluginAppsObj":[
     {
-      "name" : "FUSION",
+      "name" : "Ext",
       "type" : "oauth_user_assertion",
       "key" : "fusionOAuthUserAssertionApplication",
-      "comment" : "Select Fusion application configured in the OFS Applications screen to authenticate the plugin"
+      "comment" : "External: FFS application calling REST APIs via OAuth from OFSC. Application name: 'Concentric - Oracle Fusion Applications - User Asserted'"
     },
 
     {
-      "name" : "FFS",
+      "name" : "Int",
       "type" : "ofs",
       "key" : "ofsApiApplication",
-      "comment" : "Select OFS application configured in the OFS Applications screen to authenticate the plugin"
+      "comment" : "Internal: Field Service APIs. Application name: 'App CX Service'"
     }
 
   ],
   "plugin": {
-    "label": "debriefing_plugin",
+    "label": "bulk_health_metrics",
     "lang": "en",
-    "val": "Debrief"
+    "val": "Bulk Health Metrics"
   }
 }

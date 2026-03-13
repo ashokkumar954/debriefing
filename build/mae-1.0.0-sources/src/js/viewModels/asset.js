@@ -1,6 +1,7 @@
 define([
-    'knockout'
-], function (ko) {
+    'knockout',
+    'services/ib-assets-service'
+], function (ko, IbAssetsService) {
 
     'use strict';
 
@@ -111,6 +112,27 @@ define([
             this._enumValues = enumValues;
             window.__problemCodeEnum = enumValues;
             window.__activityId = (openData.activity && openData.activity.aid) || '';
+            window.__ibAssets = null; // reset; populated below if online
+
+            // Fetch IB Assets for this customer from Oracle Fusion.
+            // Store the Promise so navigateToAllAssets() can await it before rendering.
+            var props = openParams.properties || {};
+            var accountName = props.wo_account_name
+                || (openData.activity && openData.activity.wo_account_name)
+                || '';
+            console.log('[AssetViewModel] wo_account_name:', accountName, '| props keys:', Object.keys(props));
+            if (accountName && this.app && this.app.ofscConnector) {
+                var ibSvc = new IbAssetsService(this.app.ofscConnector);
+                this._ibAssetsReady = ibSvc.getAssetsByAccountName(accountName).then(function(assets) {
+                    window.__ibAssets = assets;
+                    console.log('[AssetViewModel] IB Assets loaded:', assets.length);
+                }).catch(function(err) {
+                    console.warn('[AssetViewModel] IB Assets fetch failed (offline?):', err);
+                });
+            } else {
+                console.warn('[AssetViewModel] wo_account_name not found in openParams.properties or openData.activity — skipping IB fetch.');
+                this._ibAssetsReady = Promise.resolve();
+            }
 
             this.problemCodeOptions(
                 Object.keys(enumValues).map(key => ({ index: key, label: enumValues[key] }))
@@ -118,13 +140,19 @@ define([
         }
         navigateToAllAssets() {
             this.showAllAssets(true);
-            setTimeout(() => {
+            // Wait for IB Assets fetch (if in progress) before rendering, then load scripts
+            var ready = this._ibAssetsReady || Promise.resolve();
+            ready.then(() => {
                 this._ensureAssetsLoaded(() => {
                     if (typeof AllAssetDetails !== 'undefined') {
-                        AllAssetDetails.render('all-assets-inline-container', this._enumValues);
+                        // Use live IB Assets when available, fall back to problem_code enum
+                        var data = (window.__ibAssets && window.__ibAssets.length > 0)
+                            ? window.__ibAssets
+                            : this._enumValues;
+                        AllAssetDetails.render('all-assets-inline-container', data);
                     }
                 });
-            }, 80);
+            });
         }
 
         _ensureAssetsLoaded(callback) {

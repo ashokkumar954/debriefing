@@ -103,7 +103,7 @@ suite('Acceptance', () => {
         }
     }
 
-    test('Validate adding parts/Validate deleting the added parts in Debrief Plugin with PDF Download and validation', (async function () {
+    test('Validate adding parts/Validate deleting the added parts with PDF Download and validation', (async function () {
         this.timeout(60000);
         let frameHandle = await page.$(properties.PLUGIN_FRAME);
         let frame = await frameHandle.contentFrame();
@@ -126,7 +126,7 @@ suite('Acceptance', () => {
         await validatePdfDownload(frame);
     }));
 
-    test('Verify Installing/Deinstalling inventories from Activity Inventory page reflects in new Debrief UI with PDF Download and validation', (async function () {
+    test('Verify asset inventory changes from Activity Inventory page are reflected in MAE with PDF Download and validation', (async function () {
         this.timeout(60000);
         let frameHandle = await page.$(properties.PLUGIN_FRAME);
         let frame = await frameHandle.contentFrame();

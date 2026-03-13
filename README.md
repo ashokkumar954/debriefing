@@ -1,214 +1,138 @@
-# Debriefing plugin for Oracle Field Service
+# BHM — Bulk Health Metrics Plugin for Oracle Field Service
 
-Debriefing is the process of reporting time and materials that were used while performing the work order.
-The reporting is usually done by a field technician. The field technician usually reports this kind of information:
+## Overview
 
-* Labor - which includes travel time and working time (measured in hours).
-* Parts - what parts and materials have been used while performing the work.
-* Charges - any extra charges such as toll or parking (measured in money spent).
+BHM (Bulk Health Metrics) is a custom Oracle Field Service (OFS) plugin built for **Concentric** to support field technicians who service multiple assets in a single activity.
 
-The "Debriefing" plugin for Oracle Field Service Cloud (OFS) is a sample code.
-It demonstrates how to provide a convenient way for field resource to report time and expenses
-and to generate the PDF invoice which is signed by the customer.
+When a technician opens an activity, BHM loads all assets associated with that activity (via the customer account). For each asset, the technician records service details — readings, checklist items, components inspected, and a problem note. Once all assets are updated and the technician ends the activity, the collected data is pushed to Oracle Integration Cloud (OIC), which routes it to the appropriate back-end integration.
 
-All parts, labor, and expense items are stored as the Inventory in corresponding pools in the OFS.
-The invoice file is saved in the property of Activity.
+### Key capabilities
 
+* View all assets linked to the current activity, with Asset ID, serial number, manufacturer, and model.
+* Expand each asset to capture:
+  * Maintenance checklist (Visual Inspection, Water Added, BDR Download, Wash, ICC Torque)
+  * Electrical readings (Low VDC, High VDC, Low SG)
+  * Component condition flags (Cables, Connectors, Contact Tips, Shrouds, etc.)
+  * Problem note (auto-populated from checked items; fully editable)
+  * Needs Repair / Complete status
+* Search and filter assets by Asset ID, serial number, or problem code.
+* Offline persistence — all form data is saved to localStorage on Save/Continue and restored when re-opened.
+* Status badges on each asset row (Saved / Complete) without needing to expand the row.
+* Data submission to OIC via REST APIs secured with OAuth (see Authentication below).
 
-## Installation instructions
 
-To start using the plugin, you can just download and import existing plugin package.
-Please refer the User manual for details.
+## Authentication
 
-To build the package and install it yourself, you need to do the following:
+BHM uses two OFSC application keys configured on the *Configuration > Forms & Plugins > Applications* screen:
 
-* Install all necessary dependencies
-* Build the package
-* Import property description or configure the properties manually
-* Import plugin or create and configure it manually 
-* Configure the OFS (create inventory types and configure screens)
+| Key label | OFSC application name | Purpose |
+|-----------|----------------------|---------|
+| **Ext** (`fusionOAuthUserAssertionApplication`) | Concentric - Oracle Fusion Applications - User Asserted | External REST API calls to FFS/Fusion using OAuth user-assertion |
+| **Int** (`ofsApiApplication`) | App CX Service | Internal Field Service API calls |
 
-All steps are detailed below.
+These keys are exposed as `Constants.KEY_EXT` and `Constants.KEY_INT` in `src/js/constants.js`.
 
 
-## Dependencies
+## Installation
 
-Project uses [NodeJS](https://nodejs.org), so first of all you need to install it.
-The Node Package Manager (NPM) will be installed automatically.
+### Prerequisites
 
-Project uses [Grunt](https://gruntjs.com/) as a task runner for building.
-Run the following command as administrator/root to install the grunt command line interface:
+* [Node.js](https://nodejs.org) (NPM is bundled)
+* [Grunt CLI](https://gruntjs.com/)
 
-    npm install -g grunt-cli
+```bash
+npm install -g grunt-cli
+npm install
+```
 
+### Build
 
-To install all required NPM dependencies (including Oracle JET), run the following in the project root folder:
+```bash
+grunt
+# or
+ojet build --release
+```
 
-    npm install
+This produces the minimized plugin package in `./build/`.
 
+### OFS Configuration
 
-## Building of the package
+**1. Plugin registration** — Using *Configuration > Forms & Plugins*, add a new plugin:
 
-To build resources and produce package use the command (must be run in the root folder of the sources package):
+| Field | Value |
+|-------|-------|
+| Plugin Type | Plugin Archive (or External Plugin for dev) |
+| Label | `bulk_health_metrics` |
+| Name | `BHM` |
 
-    grunt
+**2. Applications** — Add both application entries (Ext and Int) as described in the Authentication section above.
 
-or
+**3. Properties** — Ensure `problem_code` is added to the plugin's Available Properties with at least **Read** access. This is how BHM receives the list of asset types for the activity.
 
-    ojet build --release
+**4. Screen button** — Using *Configuration > User Types > Screen Configuration*, add the BHM button to the "Edit/View activity" screen for all relevant user types.
 
-This will produce the minimized plugin package in the *./build* folder.
-Also, there will be two XML files which can be imported into OFS:
 
-* plugins.xml    - contains the plugin package and its configuration.
-* properties.xml - contains description of the Activity and Inventory properties
-                   that must exist in OFS so plugin can use it.
+## Development
 
+BHM is an [Oracle JET](https://www.oracle.com/webfolder/technetwork/jet/index.html) web application. It uses the [OFS Plugin API](https://docs.oracle.com/en/cloud/saas/field-service/19b/fapcf/toc.htm) to communicate with OFSC.
 
-## Adding of properties
+### Source structure
 
-### Option 1: Import the properties
+| Path | Description |
+|------|-------------|
+| `src/js/viewModels/asset.js` | Landing screen — loads problem codes, navigates to asset list |
+| `src/js/viewModels/asset-detail.js` | Per-asset detail panel — readings, checklist, components, note |
+| `src/js/viewModels/all-asset-details.js` | Asset table with search/filter and row rendering |
+| `src/js/views/asset.html` | Landing and inline asset list view |
+| `src/js/constants.js` | Application-wide constants including `KEY_EXT` and `KEY_INT` |
+| `src/js/required-properties.json` | Plugin metadata — label, name, and application key definitions |
+| `src/js/ofsc-connector.js` | OFS postMessage communication layer |
+| `src/js/services/ofsc-plugin-api-transport.js` | Plugin lifecycle (ready → init → open) and property validation |
 
-You can import the generated *properties.xml* using the Configuration > Properties screen of OFS as described in the User manual
+### Local development
 
-### Option 2: Configure the properties manually
+```bash
+grunt serve
+# or
+ojet serve
+```
 
-By using the *Configuration > Properties* screen of OFS, add all properties (if they don't exist yet) that are listed
-in the *"Properties used by the plugin"* section of the User manual
+Since OFS requires HTTPS, front the JET dev server with a reverse proxy (e.g. nginx):
 
+```nginx
+server {
+    listen *:443 ssl http2;
+    ssl_certificate     /etc/nginx/cert/ssl.crt;
+    ssl_certificate_key /etc/nginx/cert/ssl.key;
+    location ~* ^/jet/ {
+        rewrite    ^/jet/(.*) /$1 break;
+        proxy_pass http://127.0.0.1:8000;
+    }
+}
+```
 
-## Adding of the plugin to the OFS
+Register the plugin in OFS as an **External Plugin** pointing to `https://localhost/jet/index.html`.
 
-### Option 1: Import the plugin
+### Available build tasks
 
-You can import the generated *plugins.xml* using the Configuration > Forms & Plugins screen of OFS as described in the User manual
+| Command | Description |
+|---------|-------------|
+| `ojet build --release` / `grunt` | Minimized package for hosted plugin upload |
+| `ojet build` / `grunt devBuild` | Unminified package for externally hosted plugin |
+| `ojet serve` / `grunt serve` | Dev HTTP server with live rebuild |
 
-### Option 2: Upload the hosted plugin package
 
-* Add new plugin using the *Configuration > Forms & Plugins* screen of OFS with the following parameters:
-    * Plugin Type: Plugin Archive
-    * Label: debriefing_plugin
-    * Name: Debrief
-    * Plugin archive: the *plugin-debriefing-X.Y.Z+TTTTT.zip* file in the *build* directory,
-      where X, Y, Z and TTTT depend on the version of the package you've build
-    * Available properties: all properties that are listed in the *"Properties used by the plugin"* section
-      of the User manual
+## Versioning
 
-### Option 3: Host plugin externally
+The build version is updated automatically on every build (`package.json`). Commit `package.json` after each build to keep source and package in sync.
 
-* Extract the *plugin-debriefing-X.Y.Z+TTTTT.zip* archive and host its contents somewhere  
-* Add new plugin using the *Configuration > Forms & Plugins* screen of OFS with the following parameters:
-    * Plugin Type: External Plugin
-    * Label: debriefing_plugin
-    * Name: Debrief
-    * URL: the address of the *index.html*. It must be accessible by the user's browser
-    * Available properties: all properties that are listed in the *"Properties used by the plugin"* section
-      of the User manual
+A `.bumpignore` file in the repo root disables automatic version bumping.
 
+To bump major or minor version manually:
 
-## Configuration of the OFS
+```bash
+grunt bumpup:major
+grunt bumpup:minor
+```
 
-* Add new inventory types using the *Configuration > Inventory Types* screen of OFS
-  as described in the User manual.
-
-* By using the *Configuration > User Types > Screen Configuration* screen of OFS, add the button
-  to the "Edit/View activity" screen and associate it with the "Debrief [debriefing_plugin]" plugin
-  for all types of users, that are supposed to use the plugin.
-
-
-## Customization and development
-
-* The "Debriefing" plugin is a [JET](https://www.oracle.com/webfolder/technetwork/jet/index.html) Web Application.
-
-* It uses the [Plugin API](https://docs.oracle.com/en/cloud/saas/field-service/19b/fapcf/toc.htm) to retrieve and
-  update the OFS data.
-
-* The Parts Catalog is used to search for Parts which aren't registered in the customer pool.
-  See [Integrating with Parts Catalog API](https://docs.oracle.com/en/cloud/saas/field-service/22d/fapcs/toc.htm) for details.
-
-* If you need to use property labels which differ from default ones, you have to update the source code accordingly.
-
-* To change the list of properties that are included into the generated *properties.xml*,
-  edit the *src/js/required-properties.json* as needed.
-
-* The label and name of the plugin that are included into the generated *plugins.xml*, are defined by the *"plugin"* 
-  field of the *src/js/required-properties.json* file.
-
-* To customize the template of the **invoice**, change the markup in the file *src/js/views/invoice.html*
-  and the `html2pdfOptions` object in the *src/js/viewModels/invoice.js* if needed.
-
-* The default JET build tasks are customized to adapt them to the OFS hosted plugin's needs.
-  Additional build steps and tasks are defined by *Grunfile.js* in the root folder of the plugin sources
-  and are incorporated into the JET build scenario by the *after_build* hook in the *scripts/hooks/after_build.js* file.
-
-* To change the invoice logo, you have to replace file "src/css/images/logo.svg"
-  or add a Secure parameter named "logoUrl" on the *Configuration > Forms & Plugins* screen of OFS
-  which value contains a URL of custom logo.
-
-### Available Oracle JET tasks:
-
-1. `ojet build --release` - build the minimized plugin package suitable for uploading it as a hosted plugin into OFS.
-2. `ojet build`           - build the plugin package suitable for adding as externally hosted plugin to OFS.
-3. `ojet serve`           - Run an HTTP server for plugin resources. See *Configuring the plugin for development*.
-                            No packages will be produced.
-
-### Alternatively you can use Grunt tasks:
-
-1. `grunt build`    - build the minimized plugin package suitable for uploading it as a hosted plugin into OFS.
-2. `grunt devBuild` - build the plugin package suitable for adding as externally hosted plugin to OFS.
-3. `grunt serve`    - Run an HTTP server for plugin resources. See *Configuring the plugin for development*.
-                      No packages will be produced.
-
-The default task `grunt` runs the 'build' command
-
-### Configuring the plugin for development
-
-You don't have to build a package every time you need to test changes made during the development.
-You can run the local HTTP server, which will watch the source files for changes and rebuild all needed resources on the fly:
-
-* Run `grunt serve` or `ojet serve` in the root folder of the plugin sources
-* As OFS requires plugin to be served via HTTPS, you need to generate SSL certificates and configure a reverse proxy
-  which will deliver the JET resources to user's browser via secure connection.
-  For example, the nginx configuration may look like this:
-
-        server {
-            listen *:443 ssl http2;
-
-            ssl_certificate     /etc/nginx/cert/ssl.crt;
-            ssl_certificate_key /etc/nginx/cert/ssl.key;
-
-            location ~* ^/jet/ {
-                rewrite    ^/jet/(.*) /$1 break;
-                proxy_pass http://127.0.0.1:8000;
-            }
-        }
-
-* Add new plugin using the *Configuration > Forms & Plugins* screen of OFS with the following parameters:
-    * Plugin Type: External Plugin
-    * Label: debriefing_plugin
-    * Name: Debrief
-    * URL: the address of the served *index.html*. Foe example, *https://localhost/jet/index.html*
-    * Available properties: all properties that are listed in the *"Properties used by the plugin"* section
-      of the User manual
-
-
-### Versioning
-
-Every time you build the package, the version is updated automatically,
-so **don't forget to commit and push the `package.json`** if you use git or other CVS
-to have the package storage and source repository synced.
-
-Version is not updated automatically if there is a file `.bumpignore` in the root folder of repository.
-
-Build updates the third number in version string along with timestamp, e.g. `1.0.X+YYYYYYYYYYYYY`,
-where X and Y are updatable parts.
-
-To update the first number, run the following manually:
-
-    grunt bumpup:major
-
-To update the second number, run this:
-
-    grunt bumpup:minor
-
-Please notice, that timestamp part will be lost in this case, so after manual version bump you should run build again.
+Run a build after a manual version bump to regenerate the timestamp portion.

@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grunt build)",
+      "Read(//c/Users/Ashok Mella/**)",
+      "Bash(sed -i 's/MAE Landing page is getting displayed/BHM Landing page is getting displayed/g; s/MAE Redwood - Verify/BHM Redwood - Verify/g' \"c:/Project/MAE/test/acceptance/acceptance.js\")",
+      "Bash(sed -i 's/reflected in MAE with/reflected in BHM with/g' \"c:/Project/MAE/test/acceptance/acceptance_withAddReturnParts_pdfdownload.js\")",
+      "Bash(sed -i 's/MAE \\(Multi Asset Execution\\)/BHM \\(Bulk Health Metrics\\)/g' \"c:/Project/MAE/test/unit/data-helper/service-debrief-helper.js\" \"c:/Project/MAE/test/unit/data-services/service-logistics-data-service.js\")",
+      "Bash(sed -i 's/# MAE — Multi Asset Execution Plugin for Oracle Field Service/# BHM — Bulk Health Metrics Plugin for Oracle Field Service/g' \"c:/Project/MAE/README.md\")",
+      "Bash(sed -i 's/MAE \\(Multi Asset Execution\\)/BHM \\(Bulk Health Metrics\\)/g' \"c:/Project/MAE/README.md\")",
+      "Bash(sed -i 's/## Sibling Project: MAE \\(Multi-Asset Execution\\)/## Sibling Project: BHM \\(Bulk Health Metrics\\)/' \"C:/Users/Ashok Mella/.claude/projects/c--Project-Field-Estimates/memory/MEMORY.md\")",
+      "Bash(sed -i 's/Purpose: Field service execution plugin — renders one row per installed-base asset/Purpose: Field service plugin — renders one row per installed-base asset/' \"C:/Users/Ashok Mella/.claude/projects/c--Project-Field-Estimates/memory/MEMORY.md\")",
+      "Bash(robocopy \"c:\\\\Project\\\\MAE\" \"c:\\\\Project\\\\Bulk Metre Reading\" /E /XD .git build web node_modules /XF *.zip /NFL /NDL /NJH /NJS)",
+      "Bash(echo \"Exit: $?\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Ashok Mella\\.claude\\projects\\c--Project-MAE\\memory",
+      "C:\\Users\\Ashok Mella\\.claude\\projects\\c--Project-MAE\\memory"
+    ]
+  }
+}

@@ -25,7 +25,7 @@ suite('Acceptance', () => {
         await helper.openNewActivity(page, partsAddedFromInventory)
     });
 
-    test('Verify Installing/Deinstalling inventories from Activity Inventory page reflects in new Debrief UI', (async function () {
+    test('Verify asset inventory changes from Activity Inventory page are reflected in MAE', (async function () {
         this.timeout(60000);
         let frameHandle = null;
         let frame = null;

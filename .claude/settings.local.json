@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(robocopy \"c:\\\\Project\\\\MAE\" \"c:\\\\Project\\\\Bulk Metre Reading\" /E /XD \".git\" \"build\" \"web\" \"node_modules\" /XF \"*.zip\" /NFL /NDL /NJH /NJS)",
+      "Bash(powershell -Command \":*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"c:\\\\Project\\\\copy_bmr.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"c:\\\\Project\\\\rename_bmr.ps1\")",
+      "Bash(powershell -Command \"Get-Content ''c:\\\\Project\\\\Bulk Metre Reading\\\\src\\\\js\\\\required-properties.json''\")",
+      "Bash(powershell -Command \"Select-String -Path ''c:\\\\Project\\\\Bulk Metre Reading\\\\package.json'' -Pattern ''name|description'' | Select-Object -First 5\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Project"
+    ]
+  }
+}
